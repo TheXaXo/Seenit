@@ -1,0 +1,28 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="login">
+    <div class="container">
+        <h1>Login User</h1>
+        <form th:action="@{/login}" th:method="POST" th:object="${user}">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" aria-describedby="usernameError"
+                       placeholder="Enter username"
+                       name="username" th:value="*{username}">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" aria-describedby="passwordError"
+                       placeholder="Enter password"
+                       name="password" th:value="*{password}">
+                <small th:if="${error}" id="passwordError" class="form-text text-danger">User with
+                    given username doesn't exist or password is wrong.
+                </small>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+    </div>
+</th:block>
+</body>
+</html>

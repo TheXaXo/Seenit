@@ -1,0 +1,17 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<body>
+<th:block th:fragment="index">
+    <div th:class="container">
+        <div th:class="jumbotron">
+            <th:block sec:authorize="!isAuthenticated()">
+                <h1>Welcome to Seenit!</h1>
+            </th:block>
+            <th:block sec:authorize="isAuthenticated()">
+                <h1 th:text="|Welcome, ${#authentication.name}|"></h1>
+            </th:block>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>
