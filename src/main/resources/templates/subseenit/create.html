@@ -1,0 +1,25 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="create">
+    <div class="container">
+        <h1>Create Subseenit</h1>
+        <form th:action="@{/subseenits/create}" th:method="POST" th:object="${subseenit}">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" id="name" aria-describedby="nameError"
+                       placeholder="Enter name"
+                       name="name" th:value="*{name}">
+                <small th:if="${alreadyExists}" id="nameError" class="form-text text-danger">Subseenit with same name
+                    already exists.
+                </small>
+                <small th:if="${error}" id="nameError" class="form-text text-danger">Name should be between 3 and 30
+                    characters.
+                </small>
+            </div>
+            <button type="submit" class="btn btn-primary">Create</button>
+        </form>
+    </div>
+</th:block>
+</body>
+</html>

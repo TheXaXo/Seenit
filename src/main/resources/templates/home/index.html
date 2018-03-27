@@ -2,14 +2,39 @@
       xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <body>
 <th:block th:fragment="index">
-    <div th:class="container">
-        <div th:class="jumbotron">
-            <th:block sec:authorize="!isAuthenticated()">
-                <h1>Welcome to Seenit!</h1>
-            </th:block>
-            <th:block sec:authorize="isAuthenticated()">
-                <h1 th:text="|Welcome, ${#authentication.name}|"></h1>
-            </th:block>
+    <div th:class="container-fluid">
+        <div th:class="row">
+            <div th:class="col-md-9">
+                <div th:class="jumbotron">
+                    <th:block sec:authorize="!isAuthenticated()">
+                        <h1>Welcome to Seenit!</h1>
+                    </th:block>
+                    <th:block sec:authorize="isAuthenticated()">
+                        <h1 th:text="|Welcome, ${#authentication.name}|"></h1>
+                    </th:block>
+                </div>
+            </div>
+            <div th:class="col-md-3">
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <div class="d-flex">
+                            <input id="searchInput" class="form-control mr-1" placeholder="Search for subseenit">
+                            <span class="input-group-addon">
+                                    <button id="searchButton" class="btn btn-default" type="button">
+                                        <i class="fa fa-search"></i> Search</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <th:block sec:authorize="isAuthenticated()">
+                    <div th:class="row">
+                        <div class="col-md-12">
+                            <a th:href="@{/subseenits/create}" class="btn btn-primary btn-block">Create your own
+                                subseenit</a>
+                        </div>
+                    </div>
+                </th:block>
+            </div>
         </div>
     </div>
 </th:block>

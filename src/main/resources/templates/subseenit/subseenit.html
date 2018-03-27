@@ -1,0 +1,15 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<body>
+<th:block th:fragment="subseenit">
+    <div th:class="container">
+        <th:block th:if="${subseenit}">
+            <h1 th:text="|Welcome to ${subseenit.name}|"></h1>
+        </th:block>
+        <th:block th:unless="${subseenit}">
+            <h1 th:text="|Subseenit not found|"></h1>
+        </th:block>
+    </div>
+</th:block>
+</body>
+</html>

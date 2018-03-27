@@ -1,10 +1,12 @@
 package com.thexaxo.seenit.entities;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -12,8 +14,12 @@ import java.util.stream.Collectors;
 @Table(name = "users")
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    private String id;
 
     @Column(nullable = false)
     private String username;
@@ -30,6 +36,15 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
+    @OneToMany(mappedBy = "creator")
+    private List<Subseenit> createdSubseenits;
+
+    @ManyToMany()
+    @JoinTable(name = "users_moderatedSubseenits",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "subseenit_id"))
+    private List<Subseenit> moderatedSubseenits;
+
     private boolean isAccountNonExpired;
 
     private boolean isAccountNonLocked;
@@ -42,11 +57,11 @@ public class User implements UserDetails {
 
     }
 
-    public long getId() {
+    public String getId() {
         return this.id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -117,6 +132,22 @@ public class User implements UserDetails {
 
     public void setEnabled(boolean enabled) {
         isEnabled = enabled;
+    }
+
+    public List<Subseenit> getCreatedSubseenits() {
+        return this.createdSubseenits;
+    }
+
+    public void setCreatedSubseenits(List<Subseenit> createdSubseenits) {
+        this.createdSubseenits = createdSubseenits;
+    }
+
+    public List<Subseenit> getModeratedSubseenits() {
+        return this.moderatedSubseenits;
+    }
+
+    public void setModeratedSubseenits(List<Subseenit> moderatedSubseenits) {
+        this.moderatedSubseenits = moderatedSubseenits;
     }
 
     public String getRolesString() {

@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User getUserById(long id) {
+    public User getUserById(String id) {
         return this.userRepository.getOne(id);
     }
 }
