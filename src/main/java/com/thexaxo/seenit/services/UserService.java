@@ -1,5 +1,6 @@
 package com.thexaxo.seenit.services;
 
+import com.thexaxo.seenit.entities.Subseenit;
 import com.thexaxo.seenit.entities.User;
 import com.thexaxo.seenit.models.RegisterUserBindingModel;
 
@@ -17,4 +18,6 @@ public interface UserService {
     List<User> getAllUsers();
 
     User getUserById(String id);
+
+    void subscribe(Subseenit subseenit, User user);
 }

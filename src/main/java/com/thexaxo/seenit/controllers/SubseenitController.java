@@ -28,9 +28,13 @@ public class SubseenitController {
     }
 
     @GetMapping("/s/{name}")
-    @PreAuthorize("permitAll()")
-    public ModelAndView subseenit(ModelAndView modelAndView, @PathVariable String name) {
+    public ModelAndView subseenit(ModelAndView modelAndView, @PathVariable String name, Principal principal) {
         Subseenit subseenit = this.subseenitService.findOneSubseenitByName(name);
+
+        if (principal != null) {
+            User user = this.userService.getUserByUsername(principal.getName());
+            modelAndView.addObject("isSubscribed", user.isSubscribedTo(subseenit.getName()));
+        }
 
         modelAndView.addObject("subseenit", subseenit);
         modelAndView.addObject("view", "subseenit/subseenit :: subseenit");
@@ -40,7 +44,6 @@ public class SubseenitController {
     }
 
     @GetMapping("/subseenits/create")
-    @PreAuthorize("isAuthenticated()")
     public ModelAndView create(ModelAndView modelAndView, @ModelAttribute("subseenit") CreateSubseenitBindingModel bindingModel) {
         modelAndView.addObject("view", "subseenit/create :: create");
         modelAndView.setViewName("base-layout");
@@ -49,9 +52,9 @@ public class SubseenitController {
     }
 
     @PostMapping("/subseenits/create")
-    @PreAuthorize("isAuthenticated()")
     public ModelAndView createConfirm(ModelAndView modelAndView, @Valid @ModelAttribute("subseenit") CreateSubseenitBindingModel bindingModel, BindingResult bindingResult, Principal principal) {
         modelAndView.addObject("view", "subseenit/create :: create");
+        modelAndView.setViewName("base-layout");
 
         if (bindingResult.hasErrors()) {
             return modelAndView;
@@ -70,6 +73,21 @@ public class SubseenitController {
         modelAndView.clear();
         modelAndView.setViewName("redirect:/s/" + bindingModel.getName());
 
+        return modelAndView;
+    }
+
+    @GetMapping("/subscribe/{subseenitName}")
+    public ModelAndView subscribe(ModelAndView modelAndView, @PathVariable String subseenitName, Principal principal) {
+        Subseenit subseenit = this.subseenitService.findOneSubseenitByName(subseenitName);
+
+        if (subseenit == null) {
+            return modelAndView;
+        }
+
+        User loggedUser = this.userService.getUserByUsername(principal.getName());
+        this.userService.subscribe(subseenit, loggedUser);
+
+        modelAndView.setViewName("redirect:/s/" + subseenitName);
         return modelAndView;
     }
 }

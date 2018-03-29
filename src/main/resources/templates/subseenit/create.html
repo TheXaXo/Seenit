@@ -13,7 +13,7 @@
                 <small th:if="${alreadyExists}" id="nameError" class="form-text text-danger">Subseenit with same name
                     already exists.
                 </small>
-                <small th:if="${error}" id="nameError" class="form-text text-danger">Name should be between 3 and 30
+                <small th:if="${#fields.hasErrors('name')}" id="nameError" class="form-text text-danger">Name should be between 3 and 30
                     characters.
                 </small>
             </div>

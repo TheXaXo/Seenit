@@ -5,6 +5,16 @@
     <div th:class="container">
         <th:block th:if="${subseenit}">
             <h1 th:text="|Welcome to ${subseenit.name}|"></h1>
+            <th:block sec:authorize="isAuthenticated()">
+                <th:block th:if="${!isSubscribed}">
+                    <a th:href="@{/subscribe/{subseenitName}(subseenitName = ${subseenit.name})}"
+                       class="btn btn-primary">Subscribe</a>
+                </th:block>
+                <th:block th:if="${isSubscribed}">
+                    <a th:href="@{/subscribe/{subseenitName}(subseenitName = ${subseenit.name})}"
+                       class="btn btn-danger">Unsubscribe</a>
+                </th:block>
+            </th:block>
         </th:block>
         <th:block th:unless="${subseenit}">
             <h1 th:text="|Subseenit not found|"></h1>

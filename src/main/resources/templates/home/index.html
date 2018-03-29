@@ -15,7 +15,7 @@
                 </div>
             </div>
             <div th:class="col-md-3">
-                <div class="row mb-3">
+                <div class="row mb-4">
                     <div class="col-md-12">
                         <div class="d-flex">
                             <input id="searchInput" class="form-control mr-1" placeholder="Search for subseenit">
@@ -27,7 +27,18 @@
                     </div>
                 </div>
                 <th:block sec:authorize="isAuthenticated()">
-                    <div th:class="row">
+                    <div class="row mb-2">
+                        <div class="col-md-12">
+                            <a th:href="@{/submit/link}" class="btn btn-primary btn-block">Submit a new link</a>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-md-12">
+                            <a th:href="@{/submit/text}" class="btn btn-primary btn-block">Submit a new text
+                                post</a>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
                         <div class="col-md-12">
                             <a th:href="@{/subseenits/create}" class="btn btn-primary btn-block">Create your own
                                 subseenit</a>

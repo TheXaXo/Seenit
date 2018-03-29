@@ -23,9 +23,14 @@ public class Subseenit {
     @ManyToOne
     private User creator;
 
+    @OneToMany(mappedBy = "subseenit")
+    private List<Post> posts;
+
     @ManyToMany(mappedBy = "moderatedSubseenits")
     private List<User> moderators;
 
+    @ManyToMany(mappedBy = "subscribedSubseenits")
+    private List<User> subscribers;
 
     @Column(nullable = false)
     private LocalDate creationDate;
@@ -58,6 +63,14 @@ public class Subseenit {
         this.creator = creator;
     }
 
+    public List<Post> getPosts() {
+        return this.posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
+
     public List<User> getModerators() {
         return this.moderators;
     }
@@ -72,5 +85,13 @@ public class Subseenit {
 
     public void setCreationDate(LocalDate creationDate) {
         this.creationDate = creationDate;
+    }
+
+    public List<User> getSubscribers() {
+        return this.subscribers;
+    }
+
+    public void setSubscribers(List<User> subscribers) {
+        this.subscribers = subscribers;
     }
 }

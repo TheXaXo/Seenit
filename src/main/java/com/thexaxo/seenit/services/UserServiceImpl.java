@@ -1,6 +1,7 @@
 package com.thexaxo.seenit.services;
 
 import com.thexaxo.seenit.entities.Role;
+import com.thexaxo.seenit.entities.Subseenit;
 import com.thexaxo.seenit.entities.User;
 import com.thexaxo.seenit.models.RegisterUserBindingModel;
 import com.thexaxo.seenit.repositories.UserRepository;
@@ -73,7 +74,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return this.userRepository.findUserByUsername(username);
+        User user = this.userRepository.findUserByUsername(username);
+
+        if (user == null) {
+            throw new UsernameNotFoundException("Username not found.");
+        }
+
+        return user;
     }
 
     @Override
@@ -84,5 +91,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User getUserById(String id) {
         return this.userRepository.getOne(id);
+    }
+
+    @Override
+    public void subscribe(Subseenit subseenit, User user) {
+        if (!user.isSubscribedTo(subseenit.getName())) {
+            user.getSubscribedSubseenits().add(subseenit);
+        } else {
+            user.getSubscribedSubseenits().remove(subseenit);
+        }
+
+        this.userRepository.saveAndFlush(user);
     }
 }

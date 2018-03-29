@@ -1,0 +1,51 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="submit-text">
+    <div class="container">
+        <h1>Submit a new text post</h1>
+        <form th:action="@{/submit/text}" th:method="POST" th:object="${post}">
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" class="form-control" id="title" aria-describedby="titleError"
+                       placeholder="Enter title"
+                       name="title" th:value="*{title}">
+                <small th:if="${#fields.hasErrors('title')}" id="titleError" class="form-text text-danger">Title should be between 3 and 50
+                    characters.
+                </small>
+            </div>
+            <div class="form-group">
+                <label for="text">Text</label>
+                <input type="text" class="form-control" id="text" aria-describedby="textError"
+                       placeholder="Enter text"
+                       name="text" th:value="*{text}">
+                <small th:if="${#fields.hasErrors('text')}" id="textError" class="form-text text-danger">Text should be longer than 3
+                    characters.
+                </small>
+            </div>
+            <div class="form-group">
+                <label for="subseenit">Subseenit</label>
+                <th:block th:if="${!subscribedSubseenits.isEmpty()}">
+                    <select class="form-control" id="subseenit" name="subseenit">
+                        <th:block th:each="subscribedSubseenit : ${subscribedSubseenits}">
+                            <option th:text="${subscribedSubseenit.getName()}"></option>
+                        </th:block>
+                    </select>
+                </th:block>
+                <th:block th:if="${subscribedSubseenits.isEmpty()}">
+                    <select class="form-control" id="subseenit" name="subseenit" disabled>
+                        <option>No subscribed subseenits</option>
+                    </select>
+                </th:block>
+            </div>
+            <th:block th:if="${subscribedSubseenits.isEmpty()}">
+                <button type="submit" class="btn btn-primary" disabled>Submit</button>
+            </th:block>
+            <th:block th:if="${!subscribedSubseenits.isEmpty()}">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </th:block>
+        </form>
+    </div>
+</th:block>
+</body>
+</html>

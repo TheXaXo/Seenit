@@ -8,7 +8,6 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -37,13 +36,22 @@ public class User implements UserDetails {
     private Set<Role> roles;
 
     @OneToMany(mappedBy = "creator")
+    private List<Post> posts;
+
+    @OneToMany(mappedBy = "creator")
     private List<Subseenit> createdSubseenits;
 
-    @ManyToMany()
+    @ManyToMany
     @JoinTable(name = "users_moderatedSubseenits",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "subseenit_id"))
     private List<Subseenit> moderatedSubseenits;
+
+    @ManyToMany
+    @JoinTable(name = "users_subscribedSubseenits",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "subseenit_id"))
+    private List<Subseenit> subscribedSubseenits;
 
     private boolean isAccountNonExpired;
 
@@ -98,6 +106,38 @@ public class User implements UserDetails {
         this.roles = authorities;
     }
 
+    public List<Post> getPosts() {
+        return this.posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
+
+    public List<Subseenit> getCreatedSubseenits() {
+        return this.createdSubseenits;
+    }
+
+    public void setCreatedSubseenits(List<Subseenit> createdSubseenits) {
+        this.createdSubseenits = createdSubseenits;
+    }
+
+    public List<Subseenit> getModeratedSubseenits() {
+        return this.moderatedSubseenits;
+    }
+
+    public void setModeratedSubseenits(List<Subseenit> moderatedSubseenits) {
+        this.moderatedSubseenits = moderatedSubseenits;
+    }
+
+    public List<Subseenit> getSubscribedSubseenits() {
+        return this.subscribedSubseenits;
+    }
+
+    public void setSubscribedSubseenits(List<Subseenit> subscribedSubseenits) {
+        this.subscribedSubseenits = subscribedSubseenits;
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return this.isAccountNonExpired;
@@ -134,25 +174,8 @@ public class User implements UserDetails {
         isEnabled = enabled;
     }
 
-    public List<Subseenit> getCreatedSubseenits() {
-        return this.createdSubseenits;
-    }
-
-    public void setCreatedSubseenits(List<Subseenit> createdSubseenits) {
-        this.createdSubseenits = createdSubseenits;
-    }
-
-    public List<Subseenit> getModeratedSubseenits() {
-        return this.moderatedSubseenits;
-    }
-
-    public void setModeratedSubseenits(List<Subseenit> moderatedSubseenits) {
-        this.moderatedSubseenits = moderatedSubseenits;
-    }
-
-    public String getRolesString() {
-        return this.roles.stream()
-                .map(r -> r.getAuthority().replace("ROLE_", ""))
-                .collect(Collectors.joining(", "));
+    public boolean isSubscribedTo(String subseenitName) {
+        return this.getSubscribedSubseenits().stream()
+                .anyMatch(s -> s.getName().equals(subseenitName));
     }
 }
