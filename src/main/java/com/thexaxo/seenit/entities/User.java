@@ -53,6 +53,24 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "subseenit_id"))
     private List<Subseenit> subscribedSubseenits;
 
+    @ManyToMany
+    @JoinTable(name = "users_upvotedPosts",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "post_id"))
+    private List<Post> upvotedPosts;
+
+    @ManyToMany
+    @JoinTable(name = "users_downvotedPosts",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "post_id"))
+    private List<Post> downvotedPosts;
+
+    @ManyToMany
+    @JoinTable(name = "users_savedPosts",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "post_id"))
+    private List<Post> savedPosts;
+
     private boolean isAccountNonExpired;
 
     private boolean isAccountNonLocked;
@@ -136,6 +154,30 @@ public class User implements UserDetails {
 
     public void setSubscribedSubseenits(List<Subseenit> subscribedSubseenits) {
         this.subscribedSubseenits = subscribedSubseenits;
+    }
+
+    public List<Post> getUpvotedPosts() {
+        return this.upvotedPosts;
+    }
+
+    public void setUpvotedPosts(List<Post> upvotedPosts) {
+        this.upvotedPosts = upvotedPosts;
+    }
+
+    public List<Post> getDownvotedPosts() {
+        return this.downvotedPosts;
+    }
+
+    public void setDownvotedPosts(List<Post> downvotedPosts) {
+        this.downvotedPosts = downvotedPosts;
+    }
+
+    public List<Post> getSavedPosts() {
+        return this.savedPosts;
+    }
+
+    public void setSavedPosts(List<Post> savedPosts) {
+        this.savedPosts = savedPosts;
     }
 
     @Override

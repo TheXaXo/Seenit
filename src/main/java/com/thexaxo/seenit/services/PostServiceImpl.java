@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -46,5 +47,10 @@ public class PostServiceImpl implements PostService {
         linkPost.setType("link");
 
         this.repository.saveAndFlush(linkPost);
+    }
+
+    @Override
+    public List<Post> getAllPosts() {
+        return this.repository.findAllByOrderByCreationDateDesc();
     }
 }

@@ -1,0 +1,20 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<body>
+<th:block th:fragment="list-posts">
+    <th:block th:each="post : ${posts}">
+        <div class="row mb-3">
+            <div class="mr-3">
+                <img th:src="@{/images/text.jpg}" alt="..." class="img-thumbnail" width="100"
+                     height="100">
+            </div>
+            <div>
+                <h3 th:text="${post.getTitle()}"></h3>
+                <h6 th:text="|Submitted ${post.getSubmittedTimeAgo()} by ${post.getCreator().getUsername()} to /s/${post.getSubseenit().getName()}|"></h6>
+            </div>
+        </div>
+    </th:block>
+</th:block>
+</body>
+</html>

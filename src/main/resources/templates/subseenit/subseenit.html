@@ -2,23 +2,48 @@
       xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <body>
 <th:block th:fragment="subseenit">
-    <div th:class="container">
+    <div th:class="container-fluid">
         <th:block th:if="${subseenit}">
             <h1 th:text="|Welcome to ${subseenit.name}|"></h1>
-            <th:block sec:authorize="isAuthenticated()">
-                <th:block th:if="${!isSubscribed}">
-                    <a th:href="@{/subscribe/{subseenitName}(subseenitName = ${subseenit.name})}"
-                       class="btn btn-primary">Subscribe</a>
-                </th:block>
-                <th:block th:if="${isSubscribed}">
-                    <a th:href="@{/subscribe/{subseenitName}(subseenitName = ${subseenit.name})}"
-                       class="btn btn-danger">Unsubscribe</a>
-                </th:block>
-            </th:block>
         </th:block>
         <th:block th:unless="${subseenit}">
             <h1 th:text="|Subseenit not found|"></h1>
         </th:block>
+        <div th:class="row">
+            <th:block th:if="${subseenit}">
+                <div class="col-md-9">
+                    <div th:class="jumbotron" th:include="post/list-posts :: list-posts"></div>
+                </div>
+                <div th:class="col-md-3">
+                    <th:block sec:authorize="isAuthenticated()">
+                        <div class="row mb-2">
+                            <div class="col-md-12">
+                                <th:block th:if="${!isSubscribed}">
+                                    <a th:href="@{/subscribe/{subseenitName}(subseenitName = ${subseenit.name})}"
+                                       class="btn btn-primary btn-block">Subscribe</a>
+                                </th:block>
+                                <th:block th:if="${isSubscribed}">
+                                    <a th:href="@{/subscribe/{subseenitName}(subseenitName = ${subseenit.name})}"
+                                       class="btn btn-danger btn-block">Unsubscribe</a>
+                                </th:block>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-12">
+                                <a th:href="@{/submit/link}" class="btn btn-primary btn-block"
+                                   th:text="|Submit a new link to ${subseenit.name}|"></a>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-12">
+                                <a th:href="@{/submit/text}" class="btn btn-primary btn-block"
+                                   th:text="|Submit a new text post to ${subseenit.name}|"></a>
+                            </div>
+                        </div>
+                    </th:block>
+                </div>
+            </th:block>
+        </div>
     </div>
 </th:block>
 </body>

@@ -3,16 +3,10 @@
 <body>
 <th:block th:fragment="index">
     <div th:class="container-fluid">
+        <h1>All Posts</h1>
         <div th:class="row">
             <div th:class="col-md-9">
-                <div th:class="jumbotron">
-                    <th:block sec:authorize="!isAuthenticated()">
-                        <h1>Welcome to Seenit!</h1>
-                    </th:block>
-                    <th:block sec:authorize="isAuthenticated()">
-                        <h1 th:text="|Welcome, ${#authentication.name}|"></h1>
-                    </th:block>
-                </div>
+                <div th:class="jumbotron" th:include="post/list-posts :: list-posts"></div>
             </div>
             <div th:class="col-md-3">
                 <div class="row mb-4">

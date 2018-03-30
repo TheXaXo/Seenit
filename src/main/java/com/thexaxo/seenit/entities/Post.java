@@ -1,9 +1,15 @@
 package com.thexaxo.seenit.entities;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.ocpsoft.prettytime.PrettyTime;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "posts")
@@ -36,6 +42,18 @@ public class Post {
 
     @Column
     private String type;
+
+    @Transient
+    private int score;
+
+    @ManyToMany(mappedBy = "upvotedPosts")
+    private List<User> usersUpvoted;
+
+    @ManyToMany(mappedBy = "downvotedPosts")
+    private List<User> usersDownvoted;
+
+    @ManyToMany(mappedBy = "savedPosts")
+    private List<User> usersSaved;
 
     public Post() {
 
@@ -103,5 +121,42 @@ public class Post {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public int getScore() {
+        return this.usersUpvoted.size() - this.usersDownvoted.size();
+    }
+
+    public List<User> getUsersUpvoted() {
+        return this.usersUpvoted;
+    }
+
+    public void setUsersUpvoted(List<User> usersUpvoted) {
+        this.usersUpvoted = usersUpvoted;
+    }
+
+    public List<User> getUsersDownvoted() {
+        return this.usersDownvoted;
+    }
+
+    public void setUsersDownvoted(List<User> usersDownvoted) {
+        this.usersDownvoted = usersDownvoted;
+    }
+
+    public List<User> getUsersSaved() {
+        return this.usersSaved;
+    }
+
+    public void setUsersSaved(List<User> usersSaved) {
+        this.usersSaved = usersSaved;
+    }
+
+    public String getSubmittedTimeAgo() {
+        PrettyTime p = new PrettyTime();
+
+        Instant instant = this.creationDate.atZone(ZoneId.systemDefault()).toInstant();
+        Date date = Date.from(instant);
+
+        return p.format(date);
     }
 }

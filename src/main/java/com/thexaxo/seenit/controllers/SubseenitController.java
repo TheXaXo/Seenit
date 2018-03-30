@@ -1,11 +1,12 @@
 package com.thexaxo.seenit.controllers;
 
+import com.thexaxo.seenit.entities.Post;
 import com.thexaxo.seenit.entities.Subseenit;
 import com.thexaxo.seenit.entities.User;
 import com.thexaxo.seenit.models.CreateSubseenitBindingModel;
+import com.thexaxo.seenit.services.PostService;
 import com.thexaxo.seenit.services.SubseenitService;
 import com.thexaxo.seenit.services.UserService;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,15 +17,29 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 public class SubseenitController {
     private SubseenitService subseenitService;
     private UserService userService;
+    private PostService postService;
 
-    public SubseenitController(SubseenitService subseenitService, UserService userService) {
+    public SubseenitController(SubseenitService subseenitService, UserService userService, PostService postService) {
         this.subseenitService = subseenitService;
         this.userService = userService;
+        this.postService = postService;
+    }
+
+    @GetMapping("/")
+    public ModelAndView index(ModelAndView modelAndView) {
+        List<Post> posts = this.postService.getAllPosts();
+
+        modelAndView.addObject("posts", posts);
+        modelAndView.addObject("view", "home/index :: index");
+        modelAndView.setViewName("base-layout");
+
+        return modelAndView;
     }
 
     @GetMapping("/s/{name}")
@@ -34,6 +49,11 @@ public class SubseenitController {
         if (principal != null) {
             User user = this.userService.getUserByUsername(principal.getName());
             modelAndView.addObject("isSubscribed", user.isSubscribedTo(subseenit.getName()));
+        }
+
+        if (subseenit != null) {
+            List<Post> posts = subseenit.getPosts();
+            modelAndView.addObject("posts", posts);
         }
 
         modelAndView.addObject("subseenit", subseenit);
