@@ -41,6 +41,7 @@ public class PostServiceImpl implements PostService {
 
         linkPost.setTitle(bindingModel.getTitle());
         linkPost.setLink(bindingModel.getLink());
+        linkPost.setThumbnailUrl(bindingModel.getThumbnailUrl());
         linkPost.setSubseenit(subseenit);
         linkPost.setCreator(creator);
         linkPost.setCreationDate(LocalDateTime.now());

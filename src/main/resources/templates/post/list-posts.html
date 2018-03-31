@@ -6,12 +6,21 @@
     <th:block th:each="post : ${posts}">
         <div class="row mb-3">
             <div class="mr-3">
-                <img th:src="@{/images/text.jpg}" alt="..." class="img-thumbnail" width="100"
-                     height="100">
+                <th:block th:if="${post.getType() == 'text'}">
+                    <img th:src="@{/images/text-post-thumbnail.jpg}" alt="..." class="img-thumbnail" width="90">
+                </th:block>
+                <th:block th:if="${post.getType() == 'link'}">
+                    <th:block th:unless="${post.getThumbnailUrl().isEmpty()}">
+                        <img th:src="@{${post.getThumbnailUrl()}}" alt="..." class="img-thumbnail" width="90">
+                    </th:block>
+                    <th:block th:if="${post.getThumbnailUrl().isEmpty()}">
+                        <img th:src="@{/images/link-no-thumbnail.jpg}" alt="..." class="img-thumbnail" width="90">
+                    </th:block>
+                </th:block>
             </div>
             <div>
-                <h3 th:text="${post.getTitle()}"></h3>
-                <h6 th:text="|Submitted ${post.getSubmittedTimeAgo()} by ${post.getCreator().getUsername()} to /s/${post.getSubseenit().getName()}|"></h6>
+                <h5 th:text="${post.getTitle()}"></h5>
+                <i th:text="|Submitted ${post.getSubmittedTimeAgo()} by ${post.getCreator().getUsername()} to /s/${post.getSubseenit().getName()}|"></i>
             </div>
         </div>
     </th:block>

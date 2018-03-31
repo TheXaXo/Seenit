@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 
 public class SubmitTextPostBindingModel {
     @NotNull
-    @Length(min = 3, max = 50)
+    @Length(min = 3, max = 150)
     private String title;
 
     @NotNull

@@ -31,6 +31,9 @@ public class Post {
     @Column
     private String link;
 
+    @Column
+    private String thumbnailUrl;
+
     @ManyToOne
     private Subseenit subseenit;
 
@@ -89,6 +92,14 @@ public class Post {
 
     public void setLink(String link) {
         this.link = link;
+    }
+
+    public String getThumbnailUrl() {
+        return this.thumbnailUrl;
+    }
+
+    public void setThumbnailUrl(String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
     }
 
     public Subseenit getSubseenit() {

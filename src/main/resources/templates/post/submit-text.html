@@ -10,7 +10,7 @@
                 <input type="text" class="form-control" id="title" aria-describedby="titleError"
                        placeholder="Enter title"
                        name="title" th:value="*{title}">
-                <small th:if="${#fields.hasErrors('title')}" id="titleError" class="form-text text-danger">Title should be between 3 and 50
+                <small th:if="${#fields.hasErrors('title')}" id="titleError" class="form-text text-danger">Title should be between 3 and 150
                     characters.
                 </small>
             </div>

@@ -4,22 +4,24 @@
 <th:block th:fragment="submit-link">
     <div class="container">
         <h1>Submit a new link</h1>
-        <form th:action="@{/submit/link}" th:method="POST" th:object="${post}">
+        <form th:id="submitLinkForm" th:action="@{/submit/link}" th:method="POST" th:object="${post}">
             <div class="form-group">
                 <label for="title">Title</label>
                 <input type="text" class="form-control" id="title" aria-describedby="titleError"
                        placeholder="Enter title"
                        name="title" th:value="*{title}">
-                <small th:if="${#fields.hasErrors('title')}" id="titleError" class="form-text text-danger">Title should be between 3 and 50
+                <small th:if="${#fields.hasErrors('title')}" id="titleError" class="form-text text-danger">Title should
+                    be between 3 and 150
                     characters.
                 </small>
             </div>
             <div class="form-group">
                 <label for="link">Link</label>
-                <input type="text" class="form-control" id="link" aria-describedby="linkError"
+                <input th:id="linkInput" type="text" class="form-control" id="link" aria-describedby="linkError"
                        placeholder="Enter link"
                        name="link" th:value="*{link}">
-                <small th:if="${#fields.hasErrors('link')}" id="linkError" class="form-text text-danger">Provided URL is invalid.
+                <small th:if="${#fields.hasErrors('link')}" id="linkError" class="form-text text-danger">Provided URL is
+                    invalid.
                 </small>
             </div>
             <div class="form-group">
@@ -37,11 +39,12 @@
                     </select>
                 </th:block>
             </div>
+            <input type="text" id="thumbnailUrl" name="thumbnailUrl" hidden="hidden">
             <th:block th:if="${subscribedSubseenits.isEmpty()}">
                 <button type="submit" class="btn btn-primary" disabled>Submit</button>
             </th:block>
             <th:block th:if="${!subscribedSubseenits.isEmpty()}">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button id="submitLinkButton" type="submit" class="btn btn-primary">Submit</button>
             </th:block>
         </form>
     </div>
