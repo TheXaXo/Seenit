@@ -3,41 +3,69 @@
 <body>
 <th:block th:fragment="subseenit">
     <div th:class="container-fluid">
-        <th:block th:if="${subseenit}">
-            <h1 th:text="|Welcome to ${subseenit.name}|"></h1>
+        <th:block th:unless="${subseenitName.isEmpty()}">
+            <h1 th:text="|Welcome to /s/${subseenitName}|"></h1>
         </th:block>
-        <th:block th:unless="${subseenit}">
+        <th:block th:if="${subseenitName.isEmpty()}">
             <h1 th:text="|Subseenit not found|"></h1>
         </th:block>
         <div th:class="row">
-            <th:block th:if="${subseenit}">
+            <th:block th:unless="${subseenitName.isEmpty()}">
                 <div class="col-md-9">
                     <div th:class="jumbotron" th:include="post/list-posts :: list-posts"></div>
+                    <nav>
+                        <ul class="pagination">
+                            <li class="page-item"><a class="page-link"
+                                                     th:if="${currentPage - 1} >= 0"
+                                                     th:href="@{/s/{subseenitName}(subseenitName = ${subseenitName}, page = ${currentPage - 1})}">Previous</a>
+                            </li>
+                            <li class="page-item"><a class="page-link"
+                                                     th:if="${currentPage + 1 < totalPages}"
+                                                     th:href="@{/s/{subseenitName}(subseenitName = ${subseenitName}, page = ${currentPage + 1})}">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
                 <div th:class="col-md-3">
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <div class="d-flex">
+                                <input id="searchInput" class="form-control mr-1" placeholder="Search for subseenit">
+                                <span class="input-group-addon">
+                                    <button id="searchButton" class="btn btn-default" type="button">
+                                        <i class="fa fa-search"></i> Search</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                     <th:block sec:authorize="isAuthenticated()">
-                        <div class="row mb-2">
+                        <div th:if="${subseenitName} != 'all' AND ${subseenitName} != 'front'" class="row mb-2">
                             <div class="col-md-12">
                                 <th:block th:if="${!isSubscribed}">
-                                    <a th:href="@{/subscribe/{subseenitName}(subseenitName = ${subseenit.name})}"
+                                    <a th:href="@{/subscribe/{subseenitName}(subseenitName = ${subseenitName})}"
                                        class="btn btn-primary btn-block">Subscribe</a>
                                 </th:block>
                                 <th:block th:if="${isSubscribed}">
-                                    <a th:href="@{/subscribe/{subseenitName}(subseenitName = ${subseenit.name})}"
+                                    <a th:href="@{/subscribe/{subseenitName}(subseenitName = ${subseenitName})}"
                                        class="btn btn-danger btn-block">Unsubscribe</a>
                                 </th:block>
                             </div>
                         </div>
                         <div class="row mb-2">
                             <div class="col-md-12">
-                                <a th:href="@{/submit/link}" class="btn btn-primary btn-block"
-                                   th:text="|Submit a new link to ${subseenit.name}|"></a>
+                                <a th:href="@{/submit/link}" class="btn btn-primary btn-block">Submit a new link</a>
                             </div>
                         </div>
                         <div class="row mb-2">
                             <div class="col-md-12">
-                                <a th:href="@{/submit/text}" class="btn btn-primary btn-block"
-                                   th:text="|Submit a new text post to ${subseenit.name}|"></a>
+                                <a th:href="@{/submit/text}" class="btn btn-primary btn-block">Submit a new text
+                                    post</a>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-12">
+                                <a th:href="@{/subseenits/create}" class="btn btn-primary btn-block">Create your own
+                                    subseenit</a>
                             </div>
                         </div>
                     </th:block>

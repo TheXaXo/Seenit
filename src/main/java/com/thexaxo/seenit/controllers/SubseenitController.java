@@ -7,6 +7,9 @@ import com.thexaxo.seenit.models.CreateSubseenitBindingModel;
 import com.thexaxo.seenit.services.PostService;
 import com.thexaxo.seenit.services.SubseenitService;
 import com.thexaxo.seenit.services.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +20,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.List;
 
 @Controller
 public class SubseenitController {
@@ -33,38 +35,47 @@ public class SubseenitController {
 
     @GetMapping("/")
     public ModelAndView index(ModelAndView modelAndView, Principal principal) {
-        List<Post> posts = this.postService.getAllPosts();
-
-        if (principal != null) {
-            User user = this.userService.getUserByUsername(principal.getName());
-
-            populateUpvotedDownvotedFields(posts, user);
-        }
-
-        modelAndView.addObject("posts", posts);
-        modelAndView.addObject("view", "home/index :: index");
-        modelAndView.setViewName("base-layout");
+        modelAndView.setViewName("redirect:/s/all");
 
         return modelAndView;
     }
 
     @GetMapping("/s/{name}")
-    public ModelAndView subseenit(ModelAndView modelAndView, @PathVariable String name, Principal principal) {
-        Subseenit subseenit = this.subseenitService.findOneSubseenitByName(name);
+    public ModelAndView subseenit(ModelAndView modelAndView, @PathVariable String name, Principal principal, @PageableDefault(size = 2) Pageable pageable) {
+        User user;
+        Page<Post> posts = null;
 
-        if (subseenit != null) {
-            List<Post> posts = subseenit.getPosts();
-            modelAndView.addObject("posts", posts);
+        if (name.equals("all")) {
+            posts = this.postService.listAllByPage(pageable);
 
             if (principal != null) {
-                User user = this.userService.getUserByUsername(principal.getName());
-                modelAndView.addObject("isSubscribed", user.isSubscribedTo(subseenit.getName()));
-
+                user = this.userService.getUserByUsername(principal.getName());
                 populateUpvotedDownvotedFields(posts, user);
+            }
+
+            modelAndView.addObject("subseenitName", "all");
+            modelAndView.addObject("totalPages", this.postService.getTotalPagesCount(pageable.getPageSize()));
+        } else {
+            Subseenit subseenit = this.subseenitService.findOneSubseenitByName(name);
+
+            if (subseenit != null) {
+                posts = this.postService.listAllBySubsenitAndPage(subseenit, pageable);
+                modelAndView.addObject("posts", posts);
+
+                if (principal != null) {
+                    user = this.userService.getUserByUsername(principal.getName());
+                    modelAndView.addObject("isSubscribed", user.isSubscribedTo(subseenit.getName()));
+
+                    populateUpvotedDownvotedFields(posts, user);
+                }
+
+                modelAndView.addObject("subseenitName", subseenit.getName());
+                modelAndView.addObject("totalPages", this.subseenitService.getPagesCount(subseenit, pageable.getPageSize()));
             }
         }
 
-        modelAndView.addObject("subseenit", subseenit);
+        modelAndView.addObject("currentPage", pageable.getPageNumber());
+        modelAndView.addObject("posts", posts);
         modelAndView.addObject("view", "subseenit/subseenit :: subseenit");
         modelAndView.setViewName("base-layout");
 
@@ -119,7 +130,7 @@ public class SubseenitController {
         return modelAndView;
     }
 
-    private void populateUpvotedDownvotedFields(List<Post> posts, User user) {
+    private void populateUpvotedDownvotedFields(Page<Post> posts, User user) {
         for (Post post : posts) {
             if (user.getUpvotedPosts().contains(post)) {
                 post.setUpvoted(true);

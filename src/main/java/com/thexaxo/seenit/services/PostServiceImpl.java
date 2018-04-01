@@ -7,6 +7,8 @@ import com.thexaxo.seenit.models.SubmitLinkBindingModel;
 import com.thexaxo.seenit.models.SubmitTextPostBindingModel;
 import com.thexaxo.seenit.repositories.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -32,7 +34,7 @@ public class PostServiceImpl implements PostService {
         textPost.setCreationDate(LocalDateTime.now());
         textPost.setType("text");
 
-        this.repository.saveAndFlush(textPost);
+        this.repository.save(textPost);
     }
 
     @Override
@@ -47,12 +49,7 @@ public class PostServiceImpl implements PostService {
         linkPost.setCreationDate(LocalDateTime.now());
         linkPost.setType("link");
 
-        this.repository.saveAndFlush(linkPost);
-    }
-
-    @Override
-    public List<Post> getAllPosts() {
-        return this.repository.findAllByOrderByCreationDateDesc();
+        this.repository.save(linkPost);
     }
 
     @Override
@@ -70,7 +67,7 @@ public class PostServiceImpl implements PostService {
             user.getUpvotedPosts().add(post);
         }
 
-        this.repository.saveAndFlush(post);
+        this.repository.save(post);
     }
 
     @Override
@@ -88,6 +85,21 @@ public class PostServiceImpl implements PostService {
             user.getDownvotedPosts().add(post);
         }
 
-        this.repository.saveAndFlush(post);
+        this.repository.save(post);
+    }
+
+    @Override
+    public Page<Post> listAllByPage(Pageable pageable) {
+        return this.repository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Post> listAllBySubsenitAndPage(Subseenit subseenit, Pageable pageable) {
+        return this.repository.findAllBySubseenit(subseenit, pageable);
+    }
+
+    @Override
+    public long getTotalPagesCount(int size) {
+        return (long) Math.ceil((double) this.repository.count() / size);
     }
 }

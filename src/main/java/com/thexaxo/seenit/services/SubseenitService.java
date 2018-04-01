@@ -8,4 +8,6 @@ public interface SubseenitService {
     Subseenit findOneSubseenitByName(String name);
 
     boolean create(CreateSubseenitBindingModel bindingModel, User loggedUser);
+
+    long getPagesCount(Subseenit subseenit, int size);
 }
