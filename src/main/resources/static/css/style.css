@@ -1,0 +1,39 @@
+.arrow-up {
+    cursor: pointer;
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+
+    border-bottom: 15px solid grey;
+}
+
+.arrow-up-clicked {
+    cursor: pointer;
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+
+    border-bottom: 15px solid darkorange;
+}
+
+.arrow-down {
+    cursor: pointer;
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+
+    border-top: 15px solid grey;
+}
+
+.arrow-down-clicked {
+    cursor: pointer;
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+
+    border-top: 15px solid cornflowerblue;
+}

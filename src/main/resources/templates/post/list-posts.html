@@ -6,6 +6,13 @@
     <th:block th:each="post : ${posts}">
         <div class="row mb-3">
             <div class="mr-3">
+                <div sec:authorize="isAuthenticated()" class="arrow-up upvote-button"></div>
+                <div class="text-center">
+                    <span class="text-muted" th:text="${post.getScore()}"></span>
+                </div>
+                <div sec:authorize="isAuthenticated()" class="arrow-down downvote-button"></div>
+            </div>
+            <div class="mr-3">
                 <th:block th:if="${post.getType() == 'text'}">
                     <img th:src="@{/images/text-post-thumbnail.jpg}" alt="..." class="img-thumbnail" width="90">
                 </th:block>
@@ -20,7 +27,9 @@
             </div>
             <div>
                 <h5 th:text="${post.getTitle()}"></h5>
-                <i th:text="|Submitted ${post.getSubmittedTimeAgo()} by ${post.getCreator().getUsername()} to /s/${post.getSubseenit().getName()}|"></i>
+                <span class="text-muted"
+                      th:text="|Submitted ${post.getSubmittedTimeAgo()} by ${post.getCreator().getUsername()} to /s/${post.getSubseenit().getName()}|">
+                </span>
             </div>
         </div>
     </th:block>
