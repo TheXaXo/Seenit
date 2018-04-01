@@ -32,8 +32,14 @@ public class SubseenitController {
     }
 
     @GetMapping("/")
-    public ModelAndView index(ModelAndView modelAndView) {
+    public ModelAndView index(ModelAndView modelAndView, Principal principal) {
         List<Post> posts = this.postService.getAllPosts();
+
+        if (principal != null) {
+            User user = this.userService.getUserByUsername(principal.getName());
+
+            populateUpvotedDownvotedFields(posts, user);
+        }
 
         modelAndView.addObject("posts", posts);
         modelAndView.addObject("view", "home/index :: index");
@@ -46,14 +52,16 @@ public class SubseenitController {
     public ModelAndView subseenit(ModelAndView modelAndView, @PathVariable String name, Principal principal) {
         Subseenit subseenit = this.subseenitService.findOneSubseenitByName(name);
 
-        if (principal != null) {
-            User user = this.userService.getUserByUsername(principal.getName());
-            modelAndView.addObject("isSubscribed", user.isSubscribedTo(subseenit.getName()));
-        }
-
         if (subseenit != null) {
             List<Post> posts = subseenit.getPosts();
             modelAndView.addObject("posts", posts);
+
+            if (principal != null) {
+                User user = this.userService.getUserByUsername(principal.getName());
+                modelAndView.addObject("isSubscribed", user.isSubscribedTo(subseenit.getName()));
+
+                populateUpvotedDownvotedFields(posts, user);
+            }
         }
 
         modelAndView.addObject("subseenit", subseenit);
@@ -109,5 +117,17 @@ public class SubseenitController {
 
         modelAndView.setViewName("redirect:/s/" + subseenitName);
         return modelAndView;
+    }
+
+    private void populateUpvotedDownvotedFields(List<Post> posts, User user) {
+        for (Post post : posts) {
+            if (user.getUpvotedPosts().contains(post)) {
+                post.setUpvoted(true);
+                post.setDownvoted(false);
+            } else if (user.getDownvotedPosts().contains(post)) {
+                post.setUpvoted(false);
+                post.setDownvoted(true);
+            }
+        }
     }
 }

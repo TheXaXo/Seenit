@@ -14,4 +14,8 @@ public interface PostService {
     void createLinkPost(SubmitLinkBindingModel bindingModel, User creator, Subseenit subseenit);
 
     List<Post> getAllPosts();
+
+    void upvote(String postId, User user);
+
+    void downvote(String postId, User user);
 }

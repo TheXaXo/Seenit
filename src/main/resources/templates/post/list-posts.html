@@ -6,11 +6,18 @@
     <th:block th:each="post : ${posts}">
         <div class="row mb-3">
             <div class="mr-3">
-                <div sec:authorize="isAuthenticated()" class="arrow-up upvote-button"></div>
+                <input type="text" hidden="hidden" class="postIdInput" th:value="${post.getId()}">
+                <th:block sec:authorize="isAuthenticated()">
+                    <div th:unless="${post.isUpvoted()}" class="arrow-up upvote-button"></div>
+                    <div th:if="${post.isUpvoted()}" class="arrow-up-clicked upvote-button"></div>
+                </th:block>
                 <div class="text-center">
                     <span class="text-muted" th:text="${post.getScore()}"></span>
                 </div>
-                <div sec:authorize="isAuthenticated()" class="arrow-down downvote-button"></div>
+                <th:block sec:authorize="isAuthenticated()">
+                    <div th:unless="${post.isDownvoted()}" class="arrow-down downvote-button"></div>
+                    <div th:if="${post.isDownvoted()}" class="arrow-down-clicked downvote-button"></div>
+                </th:block>
             </div>
             <div class="mr-3">
                 <th:block th:if="${post.getType() == 'text'}">

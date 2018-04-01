@@ -49,6 +49,12 @@ public class Post {
     @Transient
     private int score;
 
+    @Transient
+    private boolean isUpvoted;
+
+    @Transient
+    private boolean isDownvoted;
+
     @ManyToMany(mappedBy = "upvotedPosts")
     private List<User> usersUpvoted;
 
@@ -136,6 +142,22 @@ public class Post {
 
     public int getScore() {
         return this.usersUpvoted.size() - this.usersDownvoted.size();
+    }
+
+    public boolean isUpvoted() {
+        return this.isUpvoted;
+    }
+
+    public void setUpvoted(boolean upvoted) {
+        isUpvoted = upvoted;
+    }
+
+    public boolean isDownvoted() {
+        return this.isDownvoted;
+    }
+
+    public void setDownvoted(boolean downvoted) {
+        isDownvoted = downvoted;
     }
 
     public List<User> getUsersUpvoted() {

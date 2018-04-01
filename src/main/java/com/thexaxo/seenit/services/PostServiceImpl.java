@@ -54,4 +54,40 @@ public class PostServiceImpl implements PostService {
     public List<Post> getAllPosts() {
         return this.repository.findAllByOrderByCreationDateDesc();
     }
+
+    @Override
+    public void upvote(String postId, User user) {
+        Post post = this.repository.findPostById(postId);
+
+        if (post == null) {
+            return;
+        }
+
+        if (user.getUpvotedPosts().contains(post)) {
+            user.getUpvotedPosts().remove(post);
+        } else {
+            user.getDownvotedPosts().remove(post);
+            user.getUpvotedPosts().add(post);
+        }
+
+        this.repository.saveAndFlush(post);
+    }
+
+    @Override
+    public void downvote(String postId, User user) {
+        Post post = this.repository.findPostById(postId);
+
+        if (post == null) {
+            return;
+        }
+
+        if (user.getDownvotedPosts().contains(post)) {
+            user.getDownvotedPosts().remove(post);
+        } else {
+            user.getUpvotedPosts().remove(post);
+            user.getDownvotedPosts().add(post);
+        }
+
+        this.repository.saveAndFlush(post);
+    }
 }
