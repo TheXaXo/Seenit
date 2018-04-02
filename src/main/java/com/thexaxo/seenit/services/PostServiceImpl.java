@@ -94,7 +94,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Page<Post> listAllBySubsenitAndPage(Subseenit subseenit, Pageable pageable) {
+    public Page<Post> listAllBySubseenitAndPage(Subseenit subseenit, Pageable pageable) {
         return this.repository.findAllBySubseenit(subseenit, pageable);
     }
 

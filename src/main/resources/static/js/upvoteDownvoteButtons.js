@@ -1,5 +1,5 @@
 $(function () {
-    $('div.upvote-button').click(function () {
+    $(document).on('click', 'div.upvote-button', function () {
         let upvoteButton = $(this);
         let downvoteButton = $(this).parent().find('.downvote-button');
         let postScoreText = $(this).parent().find('div.text-center').find('span.text-muted');
@@ -26,11 +26,10 @@ $(function () {
         }
 
         $.get("/upvote/" + postId, function (data) {
-            console.log('asd');
         });
     });
 
-    $('div.downvote-button').click(function () {
+    $(document).on('click', 'div.downvote-button', (function () {
         let downvoteButton = $(this);
         let upvoteButton = $(this).parent().find('.upvote-button');
         let postScoreText = $(this).parent().find('div.text-center').find('span.text-muted');
@@ -57,7 +56,6 @@ $(function () {
         }
 
         $.get("/downvote/" + postId, function (data) {
-            console.log('asd');
         });
-    });
+    }));
 });

@@ -4,39 +4,41 @@
 <body>
 <th:block th:fragment="list-posts">
     <th:block th:each="post : ${posts}">
-        <div class="row mb-3">
-            <div class="mr-3">
-                <input type="text" hidden="hidden" class="postIdInput" th:value="${post.getId()}">
-                <th:block sec:authorize="isAuthenticated()">
-                    <div th:unless="${post.isUpvoted()}" class="arrow-up upvote-button"></div>
-                    <div th:if="${post.isUpvoted()}" class="arrow-up-clicked upvote-button"></div>
-                </th:block>
-                <div class="text-center">
-                    <span class="text-muted" th:text="${post.getScore()}"></span>
+        <div id="allPostsFromData">
+            <div class="row mb-3">
+                <div class="mr-3">
+                    <input type="text" hidden="hidden" class="postIdInput" th:value="${post.getId()}">
+                    <th:block sec:authorize="isAuthenticated()">
+                        <div th:unless="${post.isUpvoted()}" class="arrow-up upvote-button"></div>
+                        <div th:if="${post.isUpvoted()}" class="arrow-up-clicked upvote-button"></div>
+                    </th:block>
+                    <div class="text-center">
+                        <span class="text-muted" th:text="${post.getScore()}"></span>
+                    </div>
+                    <th:block sec:authorize="isAuthenticated()">
+                        <div th:unless="${post.isDownvoted()}" class="arrow-down downvote-button"></div>
+                        <div th:if="${post.isDownvoted()}" class="arrow-down-clicked downvote-button"></div>
+                    </th:block>
                 </div>
-                <th:block sec:authorize="isAuthenticated()">
-                    <div th:unless="${post.isDownvoted()}" class="arrow-down downvote-button"></div>
-                    <div th:if="${post.isDownvoted()}" class="arrow-down-clicked downvote-button"></div>
-                </th:block>
-            </div>
-            <div class="mr-3">
-                <th:block th:if="${post.getType() == 'text'}">
-                    <img th:src="@{/images/text-post-thumbnail.jpg}" alt="..." class="img-thumbnail" width="90">
-                </th:block>
-                <th:block th:if="${post.getType() == 'link'}">
-                    <th:block th:unless="${post.getThumbnailUrl().isEmpty()}">
-                        <img th:src="@{${post.getThumbnailUrl()}}" alt="..." class="img-thumbnail" width="90">
+                <div class="mr-3">
+                    <th:block th:if="${post.getType() == 'text'}">
+                        <img th:src="@{/images/text-post-thumbnail.jpg}" alt="..." class="img-thumbnail" width="90">
                     </th:block>
-                    <th:block th:if="${post.getThumbnailUrl().isEmpty()}">
-                        <img th:src="@{/images/link-no-thumbnail.jpg}" alt="..." class="img-thumbnail" width="90">
+                    <th:block th:if="${post.getType() == 'link'}">
+                        <th:block th:unless="${post.getThumbnailUrl().isEmpty()}">
+                            <img th:src="@{${post.getThumbnailUrl()}}" alt="..." class="img-thumbnail" width="90">
+                        </th:block>
+                        <th:block th:if="${post.getThumbnailUrl().isEmpty()}">
+                            <img th:src="@{/images/link-no-thumbnail.jpg}" alt="..." class="img-thumbnail" width="90">
+                        </th:block>
                     </th:block>
-                </th:block>
-            </div>
-            <div>
-                <h5 th:text="${post.getTitle()}"></h5>
-                <span class="text-muted"
-                      th:text="|Submitted ${post.getSubmittedTimeAgo()} by ${post.getCreator().getUsername()} to /s/${post.getSubseenit().getName()}|">
+                </div>
+                <div>
+                    <h5 th:text="${post.getTitle()}"></h5>
+                    <span class="text-muted"
+                          th:text="|Submitted ${post.getSubmittedTimeAgo()} by ${post.getCreator().getUsername()} to /s/${post.getSubseenit().getName()}|">
                 </span>
+                </div>
             </div>
         </div>
     </th:block>

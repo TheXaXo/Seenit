@@ -34,14 +34,42 @@ public class SubseenitController {
     }
 
     @GetMapping("/")
-    public ModelAndView index(ModelAndView modelAndView, Principal principal) {
+    public ModelAndView index(ModelAndView modelAndView) {
         modelAndView.setViewName("redirect:/s/all");
 
         return modelAndView;
     }
 
     @GetMapping("/s/{name}")
-    public ModelAndView subseenit(ModelAndView modelAndView, @PathVariable String name, Principal principal, @PageableDefault(size = 2) Pageable pageable) {
+    public ModelAndView subseenit(ModelAndView modelAndView, @PathVariable String name, Principal principal, @PageableDefault(size = 10) Pageable pageable) {
+        User user;
+
+        if (name.equals("all")) {
+            modelAndView.addObject("subseenitName", "all");
+            modelAndView.addObject("totalPages", this.postService.getTotalPagesCount(pageable.getPageSize()));
+        } else {
+            Subseenit subseenit = this.subseenitService.findOneSubseenitByName(name);
+
+            if (subseenit != null) {
+                if (principal != null) {
+                    user = this.userService.getUserByUsername(principal.getName());
+                    modelAndView.addObject("isSubscribed", user.isSubscribedTo(subseenit.getName()));
+                }
+
+                modelAndView.addObject("subseenitName", subseenit.getName());
+                modelAndView.addObject("totalPages", this.subseenitService.getPagesCount(subseenit, pageable.getPageSize()));
+            }
+        }
+
+        modelAndView.addObject("currentPage", pageable.getPageNumber());
+        modelAndView.addObject("view", "subseenit/subseenit :: subseenit");
+        modelAndView.setViewName("base-layout");
+
+        return modelAndView;
+    }
+
+    @GetMapping("/s/{name}/posts")
+    public ModelAndView getPostsFromSubseenit(ModelAndView modelAndView, @PathVariable String name, Principal principal, @PageableDefault(size = 10) Pageable pageable) {
         User user;
         Page<Post> posts = null;
 
@@ -52,32 +80,21 @@ public class SubseenitController {
                 user = this.userService.getUserByUsername(principal.getName());
                 populateUpvotedDownvotedFields(posts, user);
             }
-
-            modelAndView.addObject("subseenitName", "all");
-            modelAndView.addObject("totalPages", this.postService.getTotalPagesCount(pageable.getPageSize()));
         } else {
             Subseenit subseenit = this.subseenitService.findOneSubseenitByName(name);
 
             if (subseenit != null) {
-                posts = this.postService.listAllBySubsenitAndPage(subseenit, pageable);
-                modelAndView.addObject("posts", posts);
-
-                if (principal != null) {
-                    user = this.userService.getUserByUsername(principal.getName());
-                    modelAndView.addObject("isSubscribed", user.isSubscribedTo(subseenit.getName()));
-
-                    populateUpvotedDownvotedFields(posts, user);
-                }
-
-                modelAndView.addObject("subseenitName", subseenit.getName());
-                modelAndView.addObject("totalPages", this.subseenitService.getPagesCount(subseenit, pageable.getPageSize()));
+                posts = this.postService.listAllBySubseenitAndPage(subseenit, pageable);
             }
         }
 
-        modelAndView.addObject("currentPage", pageable.getPageNumber());
+        if (principal != null && posts != null) {
+            user = this.userService.getUserByUsername(principal.getName());
+            populateUpvotedDownvotedFields(posts, user);
+        }
+
         modelAndView.addObject("posts", posts);
-        modelAndView.addObject("view", "subseenit/subseenit :: subseenit");
-        modelAndView.setViewName("base-layout");
+        modelAndView.setViewName("post/list-posts");
 
         return modelAndView;
     }

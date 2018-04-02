@@ -2,6 +2,9 @@
       xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <body>
 <th:block th:fragment="subseenit">
+    <script th:src="@{/js/postsData.js}"></script>
+    <script th:src="@{/js/upvoteDownvoteButtons.js}"></script>
+    <script th:src="@{/js/search.js}"></script>
     <div th:class="container-fluid">
         <th:block th:unless="${subseenitName.isEmpty()}">
             <h1 th:text="|Welcome to /s/${subseenitName}|"></h1>
@@ -12,19 +15,9 @@
         <div th:class="row">
             <th:block th:unless="${subseenitName.isEmpty()}">
                 <div class="col-md-9">
-                    <div th:class="jumbotron" th:include="post/list-posts :: list-posts"></div>
-                    <nav>
-                        <ul class="pagination">
-                            <li class="page-item"><a class="page-link"
-                                                     th:if="${currentPage - 1} >= 0"
-                                                     th:href="@{/s/{subseenitName}(subseenitName = ${subseenitName}, page = ${currentPage - 1})}">Previous</a>
-                            </li>
-                            <li class="page-item"><a class="page-link"
-                                                     th:if="${currentPage + 1 < totalPages}"
-                                                     th:href="@{/s/{subseenitName}(subseenitName = ${subseenitName}, page = ${currentPage + 1})}">Next</a>
-                            </li>
-                        </ul>
-                    </nav>
+                    <input type="hidden" id="currentPage" th:value="${currentPage}"/>
+                    <input type="hidden" id="totalPages" th:value="${totalPages}"/>
+                    <div th:class="jumbotron" th:id="postsDiv"></div>
                 </div>
                 <div th:class="col-md-3">
                     <div class="row mb-4">

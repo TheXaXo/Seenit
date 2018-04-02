@@ -21,7 +21,7 @@ public interface PostService {
 
     Page<Post> listAllByPage(Pageable pageable);
 
-    Page<Post> listAllBySubsenitAndPage(Subseenit subseenit, Pageable pageable);
+    Page<Post> listAllBySubseenitAndPage(Subseenit subseenit, Pageable pageable);
 
     long getTotalPagesCount(int size);
 }
