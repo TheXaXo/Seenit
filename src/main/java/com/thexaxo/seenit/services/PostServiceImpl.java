@@ -24,7 +24,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void createTextPost(SubmitTextPostBindingModel bindingModel, User creator, Subseenit subseenit) {
+    public Post createTextPost(SubmitTextPostBindingModel bindingModel, User creator, Subseenit subseenit) {
         Post textPost = new Post();
 
         textPost.setTitle(bindingModel.getTitle());
@@ -34,11 +34,11 @@ public class PostServiceImpl implements PostService {
         textPost.setCreationDate(LocalDateTime.now());
         textPost.setType("text");
 
-        this.repository.save(textPost);
+        return this.repository.save(textPost);
     }
 
     @Override
-    public void createLinkPost(SubmitLinkBindingModel bindingModel, User creator, Subseenit subseenit) {
+    public Post createLinkPost(SubmitLinkBindingModel bindingModel, User creator, Subseenit subseenit) {
         Post linkPost = new Post();
 
         linkPost.setTitle(bindingModel.getTitle());
@@ -49,7 +49,7 @@ public class PostServiceImpl implements PostService {
         linkPost.setCreationDate(LocalDateTime.now());
         linkPost.setType("link");
 
-        this.repository.save(linkPost);
+        return this.repository.save(linkPost);
     }
 
     @Override
@@ -101,5 +101,10 @@ public class PostServiceImpl implements PostService {
     @Override
     public long getTotalPagesCount(int size) {
         return (long) Math.ceil((double) this.repository.count() / size);
+    }
+
+    @Override
+    public Post findById(String postId) {
+        return this.repository.findPostById(postId);
     }
 }

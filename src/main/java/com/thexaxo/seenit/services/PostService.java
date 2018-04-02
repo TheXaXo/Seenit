@@ -11,9 +11,9 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface PostService {
-    void createTextPost(SubmitTextPostBindingModel bindingModel, User creator, Subseenit subseenit);
+    Post createTextPost(SubmitTextPostBindingModel bindingModel, User creator, Subseenit subseenit);
 
-    void createLinkPost(SubmitLinkBindingModel bindingModel, User creator, Subseenit subseenit);
+    Post createLinkPost(SubmitLinkBindingModel bindingModel, User creator, Subseenit subseenit);
 
     void upvote(String postId, User user);
 
@@ -24,4 +24,6 @@ public interface PostService {
     Page<Post> listAllBySubseenitAndPage(Subseenit subseenit, Pageable pageable);
 
     long getTotalPagesCount(int size);
+
+    Post findById(String postId);
 }

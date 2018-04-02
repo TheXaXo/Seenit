@@ -1,0 +1,80 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<body>
+<th:block th:fragment="post-page">
+    <script th:src="@{/js/upvoteDownvoteButtons.js}"></script>
+    <script th:src="@{/js/search.js}"></script>
+    <div th:class="container-fluid">
+        <h1 th:text="|Welcome to /s/${subseenitName}|"></h1>
+        <div th:class="row">
+            <div class="col-md-9">
+                <div th:class="jumbotron">
+                    <div class="row mb-3">
+                        <div class="mr-3">
+                            <input type="text" hidden="hidden" class="postIdInput" th:value="${post.getId()}">
+                            <th:block sec:authorize="isAuthenticated()">
+                                <div th:unless="${post.isUpvoted()}" class="arrow-up upvote-button"></div>
+                                <div th:if="${post.isUpvoted()}" class="arrow-up-clicked upvote-button"></div>
+                            </th:block>
+                            <div class="text-center">
+                                <span class="text-muted" th:text="${post.getScore()}"></span>
+                            </div>
+                            <th:block sec:authorize="isAuthenticated()">
+                                <div th:unless="${post.isDownvoted()}" class="arrow-down downvote-button"></div>
+                                <div th:if="${post.isDownvoted()}" class="arrow-down-clicked downvote-button"></div>
+                            </th:block>
+                        </div>
+                        <div class="mr-3">
+                            <th:block th:if="${post.getType() == 'text'}">
+                                <img th:src="@{/images/text-post-thumbnail.jpg}" alt="..." class="img-thumbnail"
+                                     width="90">
+                            </th:block>
+                            <th:block th:if="${post.getType() == 'link'}">
+                                <a th:href="@{${post.getLink()}}">
+                                    <th:block th:unless="${post.getThumbnailUrl().isEmpty()}">
+                                        <img th:src="@{${post.getThumbnailUrl()}}" alt="..." class="img-thumbnail"
+                                             width="90">
+                                    </th:block>
+                                    <th:block th:if="${post.getThumbnailUrl().isEmpty()}">
+                                        <img th:src="@{/images/link-no-thumbnail.jpg}" alt="..." class="img-thumbnail"
+                                             width="90">
+                                    </th:block>
+                                </a>
+                            </th:block>
+                        </div>
+                        <div>
+                            <th:block th:if="${post.getType()} == 'link'">
+                                <a th:href="@{${post.getLink()}}" style="text-decoration: none">
+                                    <h5 class="mb-0" th:text="${post.getTitle()}" style="color: black;"></h5>
+                                </a>
+                            </th:block>
+                            <th:block th:if="${post.getType()} == 'text'">
+                                <h5 class="mb-0" th:text="${post.getTitle()}" style="color: black"></h5>
+                            </th:block>
+                            <span class="text-muted" style="font-size: 85%">
+                        <span th:text="|Submitted ${post.getSubmittedTimeAgo()} by |"></span>
+                        <a th:href="@{/u/{creatorUsername}(creatorUsername = ${post.getCreator().getUsername()})}"
+                           th:text="|${post.getCreator().getUsername()}|">
+                        </a>
+                        <span th:text=" to "></span>
+                        <a th:href="@{/s/{subseenitName}(subseenitName = ${post.getSubseenit().getName()})}"
+                           th:text="|/s/${post.getSubseenit().getName()}|">
+                        </a>
+                    <br/>
+                        <a class="mr-1" th:text="|${commentsCount} comments|"></a>
+                        <th:block sec:authorize="isAuthenticated()">
+                            <a class="mr-1" th:href="@{/save/{postId}(postId = ${post.getId()})}">save</a>
+                            <a th:href="@{/report/{postId}(postId = ${post.getId()})}">report</a>
+                        </th:block>
+                    </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div th:class="col-md-3" th:include="fragments/sidebar :: sidebar"></div>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

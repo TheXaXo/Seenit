@@ -1,0 +1,51 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<body>
+<th:block th:fragment="sidebar">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="d-flex">
+                <input id="searchInput" class="form-control mr-1" placeholder="Search for subseenit">
+                <span class="input-group-addon">
+                    <button id="searchButton" class="btn btn-default" type="button">
+                        <i class="fa fa-search"></i> Search
+                    </button>
+                </span>
+            </div>
+        </div>
+    </div>
+    <th:block sec:authorize="isAuthenticated()">
+        <div class="row mb-4" th:if="${subseenitName} != 'all' AND ${subseenitName} != 'front'">
+            <div class="col-md-12">
+                <th:block th:if="${!isSubscribed}">
+                    <a th:href="@{/subscribe/{subseenitName}(subseenitName = ${subseenitName})}"
+                       class="btn btn-success btn-block">Subscribe</a>
+                </th:block>
+                <th:block th:if="${isSubscribed}">
+                    <a th:href="@{/subscribe/{subseenitName}(subseenitName = ${subseenitName})}"
+                       class="btn btn-danger btn-block">Unsubscribe</a>
+                </th:block>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-md-12">
+                <a th:href="@{/submit/link}" class="btn btn-primary btn-block">Submit a new link</a>
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <a th:href="@{/submit/text}" class="btn btn-primary btn-block">Submit a new text
+                    post</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <a th:href="@{/subseenits/create}" class="btn btn-info btn-block">Create your own
+                    subseenit</a>
+            </div>
+        </div>
+    </th:block>
+</th:block>
+</body>
+</html>

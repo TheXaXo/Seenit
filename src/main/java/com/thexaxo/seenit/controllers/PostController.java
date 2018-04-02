@@ -1,6 +1,8 @@
 package com.thexaxo.seenit.controllers;
 
+import com.thexaxo.seenit.entities.Post;
 import com.thexaxo.seenit.entities.Subseenit;
+import com.thexaxo.seenit.entities.User;
 import com.thexaxo.seenit.models.SubmitLinkBindingModel;
 import com.thexaxo.seenit.models.SubmitTextPostBindingModel;
 import com.thexaxo.seenit.services.PostService;
@@ -71,11 +73,10 @@ public class PostController {
             return modelAndView;
         }
 
-        this.postService.createTextPost(bindingModel, userService.getUserByUsername(principal.getName()), subseenit);
+        Post post = this.postService.createTextPost(bindingModel, userService.getUserByUsername(principal.getName()), subseenit);
 
         modelAndView.clear();
-        //TODO redirect to post instead of index
-        modelAndView.setViewName("redirect:/");
+        modelAndView.setViewName("redirect:/s/" + subseenit.getName() + "/" + post.getId());
 
         return modelAndView;
     }
@@ -98,11 +99,10 @@ public class PostController {
             return modelAndView;
         }
 
-        this.postService.createLinkPost(bindingModel, userService.getUserByUsername(principal.getName()), subseenit);
+        Post post = this.postService.createLinkPost(bindingModel, userService.getUserByUsername(principal.getName()), subseenit);
 
         modelAndView.clear();
-        //TODO redirect to post instead of index
-        modelAndView.setViewName("redirect:/");
+        modelAndView.setViewName("redirect:/s/" + subseenit.getName() + "/" + post.getId());
 
         return modelAndView;
     }
@@ -119,5 +119,28 @@ public class PostController {
         this.postService.downvote(postId, userService.getUserByUsername(principal.getName()));
 
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @GetMapping("/s/{subseenitName}/comments/{postId}")
+    public ModelAndView postPage(@PathVariable String subseenitName, @PathVariable String postId, ModelAndView modelAndView, Principal principal) {
+        Subseenit subseenit = this.subseenitService.findOneSubseenitByName(subseenitName);
+        Post post = this.postService.findById(postId);
+
+        if (subseenit == null || post == null) {
+            //TODO add exceptions
+            return modelAndView;
+        }
+
+        if (principal != null) {
+            User user = this.userService.getUserByUsername(principal.getName());
+            modelAndView.addObject("isSubscribed", user.isSubscribedTo(subseenit.getName()));
+        }
+
+        modelAndView.addObject("post", post);
+        modelAndView.addObject("view", "post/post-page :: post-page");
+        modelAndView.addObject("subseenitName", subseenit.getName());
+        modelAndView.setViewName("base-layout");
+
+        return modelAndView;
     }
 }

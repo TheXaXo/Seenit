@@ -22,22 +22,53 @@
                 </div>
                 <div class="mr-3">
                     <th:block th:if="${post.getType() == 'text'}">
-                        <img th:src="@{/images/text-post-thumbnail.jpg}" alt="..." class="img-thumbnail" width="90">
+                        <a th:href="@{/s/{subseenitName}/comments/{postId}(subseenitName = ${post.getSubseenit().getName()}, postId = ${post.getId()})}">
+                            <img th:src="@{/images/text-post-thumbnail.jpg}" alt="..." class="img-thumbnail" width="90">
+                        </a>
                     </th:block>
                     <th:block th:if="${post.getType() == 'link'}">
-                        <th:block th:unless="${post.getThumbnailUrl().isEmpty()}">
-                            <img th:src="@{${post.getThumbnailUrl()}}" alt="..." class="img-thumbnail" width="90">
-                        </th:block>
-                        <th:block th:if="${post.getThumbnailUrl().isEmpty()}">
-                            <img th:src="@{/images/link-no-thumbnail.jpg}" alt="..." class="img-thumbnail" width="90">
-                        </th:block>
+                        <a th:href="@{${post.getLink()}}">
+                            <th:block th:unless="${post.getThumbnailUrl().isEmpty()}">
+                                <img th:src="@{${post.getThumbnailUrl()}}" alt="..." class="img-thumbnail" width="90">
+                            </th:block>
+                            <th:block th:if="${post.getThumbnailUrl().isEmpty()}">
+                                <img th:src="@{/images/link-no-thumbnail.jpg}" alt="..." class="img-thumbnail"
+                                     width="90">
+                            </th:block>
+                        </a>
                     </th:block>
                 </div>
                 <div>
-                    <h5 th:text="${post.getTitle()}"></h5>
-                    <span class="text-muted"
-                          th:text="|Submitted ${post.getSubmittedTimeAgo()} by ${post.getCreator().getUsername()} to /s/${post.getSubseenit().getName()}|">
-                </span>
+                    <th:block th:if="${post.getType()} == 'link'">
+                        <a th:href="@{${post.getLink()}}" style="text-decoration: none">
+                            <h5 class="mb-0" th:text="${post.getTitle()}" style="color: black;"></h5>
+                        </a>
+                    </th:block>
+                    <th:block th:if="${post.getType()} == 'text'">
+                        <a th:href="@{/s/{subseenitName}/comments/{postId}(subseenitName = ${post.getSubseenit().getName()}, postId = ${post.getId()})}"
+                           style="text-decoration: none">
+                            <h5 class="mb-0" th:text="${post.getTitle()}" style="color: black"></h5>
+                        </a>
+                    </th:block>
+                    <span class="text-muted" style="font-size: 85%">
+                        <span th:text="|Submitted ${post.getSubmittedTimeAgo()} by |"></span>
+                        <a th:href="@{/u/{creatorUsername}(creatorUsername = ${post.getCreator().getUsername()})}"
+                           th:text="|${post.getCreator().getUsername()}|">
+                        </a>
+                        <span th:text=" to "></span>
+                        <a th:href="@{/s/{subseenitName}(subseenitName = ${post.getSubseenit().getName()})}"
+                           th:text="|/s/${post.getSubseenit().getName()}|">
+                        </a>
+                    <br/>
+                        <a class="mr-1"
+                           th:href="@{/s/{subseenitName}/comments/{postId}(subseenitName = ${post.getSubseenit().getName()}, postId = ${post.getId()})}"
+                           th:text="|${commentsCount} comments|">
+                        </a>
+                        <th:block sec:authorize="isAuthenticated()">
+                            <a class="mr-1" th:href="@{/save/{postId}(postId = ${post.getId()})}">save</a>
+                            <a th:href="@{/report/{postId}(postId = ${post.getId()})}">report</a>
+                        </th:block>
+                    </span>
                 </div>
             </div>
         </div>
