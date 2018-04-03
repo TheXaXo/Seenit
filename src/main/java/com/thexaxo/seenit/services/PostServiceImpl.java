@@ -107,4 +107,22 @@ public class PostServiceImpl implements PostService {
     public Post findById(String postId) {
         return this.repository.findPostById(postId);
     }
+
+    @Override
+    public void populateUpvotedDownvotedFields(Page<Post> posts, User user) {
+        for (Post post : posts) {
+            this.populateUpvotedDownvotedFields(post, user);
+        }
+    }
+
+    @Override
+    public void populateUpvotedDownvotedFields(Post post, User user) {
+        if (user.getUpvotedPosts().contains(post)) {
+            post.setUpvoted(true);
+            post.setDownvoted(false);
+        } else if (user.getDownvotedPosts().contains(post)) {
+            post.setUpvoted(false);
+            post.setDownvoted(true);
+        }
+    }
 }

@@ -76,7 +76,7 @@ public class PostController {
         Post post = this.postService.createTextPost(bindingModel, userService.getUserByUsername(principal.getName()), subseenit);
 
         modelAndView.clear();
-        modelAndView.setViewName("redirect:/s/" + subseenit.getName() + "/" + post.getId());
+        modelAndView.setViewName("redirect:/s/" + subseenit.getName() + "/comments/" + post.getId());
 
         return modelAndView;
     }
@@ -102,7 +102,7 @@ public class PostController {
         Post post = this.postService.createLinkPost(bindingModel, userService.getUserByUsername(principal.getName()), subseenit);
 
         modelAndView.clear();
-        modelAndView.setViewName("redirect:/s/" + subseenit.getName() + "/" + post.getId());
+        modelAndView.setViewName("redirect:/s/" + subseenit.getName() + "/comments/" + post.getId());
 
         return modelAndView;
     }
@@ -133,6 +133,8 @@ public class PostController {
 
         if (principal != null) {
             User user = this.userService.getUserByUsername(principal.getName());
+
+            this.postService.populateUpvotedDownvotedFields(post, user);
             modelAndView.addObject("isSubscribed", user.isSubscribedTo(subseenit.getName()));
         }
 

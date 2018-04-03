@@ -1,0 +1,14 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="subreddit-banner">
+    <div class="jumbotron p-0 my-4 shadow" style="background-color: lightblue">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h1 class="p-4 display-4" th:text="|Welcome to /s/${subseenitName}|"></h1>
+            </div>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

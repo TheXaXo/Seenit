@@ -26,4 +26,8 @@ public interface PostService {
     long getTotalPagesCount(int size);
 
     Post findById(String postId);
+
+    void populateUpvotedDownvotedFields(Page<Post> posts, User user);
+
+    void populateUpvotedDownvotedFields(Post post, User user);
 }

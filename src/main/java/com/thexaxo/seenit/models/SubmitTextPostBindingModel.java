@@ -10,7 +10,7 @@ public class SubmitTextPostBindingModel {
     private String title;
 
     @NotNull
-    @Length(min = 3)
+    @Length(min = 3, max = 65535)
     private String text;
 
     @NotNull

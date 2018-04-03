@@ -78,7 +78,7 @@ public class SubseenitController {
 
             if (principal != null) {
                 user = this.userService.getUserByUsername(principal.getName());
-                populateUpvotedDownvotedFields(posts, user);
+                this.postService.populateUpvotedDownvotedFields(posts, user);
             }
         } else {
             Subseenit subseenit = this.subseenitService.findOneSubseenitByName(name);
@@ -90,7 +90,7 @@ public class SubseenitController {
 
         if (principal != null && posts != null) {
             user = this.userService.getUserByUsername(principal.getName());
-            populateUpvotedDownvotedFields(posts, user);
+            this.postService.populateUpvotedDownvotedFields(posts, user);
         }
 
         modelAndView.addObject("posts", posts);
@@ -145,17 +145,5 @@ public class SubseenitController {
 
         modelAndView.setViewName("redirect:/s/" + subseenitName);
         return modelAndView;
-    }
-
-    private void populateUpvotedDownvotedFields(Page<Post> posts, User user) {
-        for (Post post : posts) {
-            if (user.getUpvotedPosts().contains(post)) {
-                post.setUpvoted(true);
-                post.setDownvoted(false);
-            } else if (user.getDownvotedPosts().contains(post)) {
-                post.setUpvoted(false);
-                post.setDownvoted(true);
-            }
-        }
     }
 }

@@ -2,7 +2,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <body>
 <th:block th:fragment="register">
-    <div class="container">
+    <div class="container mt-5">
         <h1>Register User</h1>
         <form th:action="@{/register}" th:method="POST" th:object="${user}">
             <div class="form-group">
