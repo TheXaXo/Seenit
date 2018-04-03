@@ -93,6 +93,45 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row mb-3 p-3 rounded shadow" style="background-color: white">
+                        <div class="col-md-12">
+                            <form>
+                                <div class="form-group">
+                                    <textarea class="form-control" rows="5" placeholder="Enter comment"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-success">
+                                    Add
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row mb-3 p-3 rounded shadow" style="background-color: white">
+                        <div class="mr-3">
+                            <input type="text" hidden="hidden" class="postIdInput" th:value="${post.getId()}">
+                            <th:block sec:authorize="isAuthenticated()">
+                                <div th:unless="${post.isUpvoted()}" class="arrow-up upvote-button"></div>
+                                <div th:if="${post.isUpvoted()}" class="arrow-up-clicked upvote-button"></div>
+                            </th:block>
+                            <div class="text-center">
+                                <span class="text-muted" th:text="${post.getScore()}"></span>
+                            </div>
+                            <th:block sec:authorize="isAuthenticated()">
+                                <div th:unless="${post.isDownvoted()}" class="arrow-down downvote-button"></div>
+                                <div th:if="${post.isDownvoted()}"
+                                     class="arrow-down-clicked downvote-button"></div>
+                            </th:block>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <a th:href="@{/}" class="mr-1">TheXaXo</a>
+                                <span th:text="|12 Points|" class="text-muted mr-1"></span>
+                                <span th:text="|4 hours ago|" class="text-muted mr-1"></span>
+                            </div>
+                            <div class="col-md-12">
+                                Random comment text
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-md-3" th:include="fragments/sidebar :: sidebar"></div>
             </div>

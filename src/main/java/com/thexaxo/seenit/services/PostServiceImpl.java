@@ -3,6 +3,7 @@ package com.thexaxo.seenit.services;
 import com.thexaxo.seenit.entities.Post;
 import com.thexaxo.seenit.entities.Subseenit;
 import com.thexaxo.seenit.entities.User;
+import com.thexaxo.seenit.exceptions.PostNotFoundException;
 import com.thexaxo.seenit.models.SubmitLinkBindingModel;
 import com.thexaxo.seenit.models.SubmitTextPostBindingModel;
 import com.thexaxo.seenit.repositories.PostRepository;
@@ -57,7 +58,7 @@ public class PostServiceImpl implements PostService {
         Post post = this.repository.findPostById(postId);
 
         if (post == null) {
-            return;
+            throw new PostNotFoundException();
         }
 
         if (user.getUpvotedPosts().contains(post)) {
@@ -75,7 +76,7 @@ public class PostServiceImpl implements PostService {
         Post post = this.repository.findPostById(postId);
 
         if (post == null) {
-            return;
+            throw new PostNotFoundException();
         }
 
         if (user.getDownvotedPosts().contains(post)) {

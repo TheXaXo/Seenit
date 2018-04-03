@@ -3,6 +3,8 @@ package com.thexaxo.seenit.controllers;
 import com.thexaxo.seenit.entities.Post;
 import com.thexaxo.seenit.entities.Subseenit;
 import com.thexaxo.seenit.entities.User;
+import com.thexaxo.seenit.exceptions.PostNotFoundException;
+import com.thexaxo.seenit.exceptions.SubseenitNotFoundException;
 import com.thexaxo.seenit.models.SubmitLinkBindingModel;
 import com.thexaxo.seenit.models.SubmitTextPostBindingModel;
 import com.thexaxo.seenit.services.PostService;
@@ -70,7 +72,7 @@ public class PostController {
         Subseenit subseenit = this.subseenitService.findOneSubseenitByName(bindingModel.getSubseenit());
 
         if (subseenit == null) {
-            return modelAndView;
+            throw new SubseenitNotFoundException();
         }
 
         Post post = this.postService.createTextPost(bindingModel, userService.getUserByUsername(principal.getName()), subseenit);
@@ -96,7 +98,7 @@ public class PostController {
         Subseenit subseenit = this.subseenitService.findOneSubseenitByName(bindingModel.getSubseenit());
 
         if (subseenit == null) {
-            return modelAndView;
+            throw new SubseenitNotFoundException();
         }
 
         Post post = this.postService.createLinkPost(bindingModel, userService.getUserByUsername(principal.getName()), subseenit);
@@ -124,11 +126,15 @@ public class PostController {
     @GetMapping("/s/{subseenitName}/comments/{postId}")
     public ModelAndView postPage(@PathVariable String subseenitName, @PathVariable String postId, ModelAndView modelAndView, Principal principal) {
         Subseenit subseenit = this.subseenitService.findOneSubseenitByName(subseenitName);
+
+        if (subseenit == null) {
+            throw new SubseenitNotFoundException();
+        }
+
         Post post = this.postService.findById(postId);
 
-        if (subseenit == null || post == null) {
-            //TODO add exceptions
-            return modelAndView;
+        if (post == null) {
+            throw new PostNotFoundException();
         }
 
         if (principal != null) {

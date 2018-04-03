@@ -3,6 +3,7 @@ package com.thexaxo.seenit.controllers;
 import com.thexaxo.seenit.entities.Post;
 import com.thexaxo.seenit.entities.Subseenit;
 import com.thexaxo.seenit.entities.User;
+import com.thexaxo.seenit.exceptions.SubseenitNotFoundException;
 import com.thexaxo.seenit.models.CreateSubseenitBindingModel;
 import com.thexaxo.seenit.services.PostService;
 import com.thexaxo.seenit.services.SubseenitService;
@@ -137,7 +138,7 @@ public class SubseenitController {
         Subseenit subseenit = this.subseenitService.findOneSubseenitByName(subseenitName);
 
         if (subseenit == null) {
-            return modelAndView;
+            throw new SubseenitNotFoundException();
         }
 
         User loggedUser = this.userService.getUserByUsername(principal.getName());
