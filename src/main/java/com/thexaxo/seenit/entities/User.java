@@ -38,21 +38,6 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "creator")
     private List<Post> posts;
 
-    @OneToMany(mappedBy = "creator")
-    private List<Subseenit> createdSubseenits;
-
-    @ManyToMany
-    @JoinTable(name = "users_moderatedSubseenits",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "subseenit_id"))
-    private List<Subseenit> moderatedSubseenits;
-
-    @ManyToMany
-    @JoinTable(name = "users_subscribedSubseenits",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "subseenit_id"))
-    private List<Subseenit> subscribedSubseenits;
-
     @ManyToMany
     @JoinTable(name = "users_upvotedPosts",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -70,6 +55,36 @@ public class User implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "post_id"))
     private List<Post> savedPosts;
+
+    @OneToMany(mappedBy = "creator")
+    private List<Comment> comments;
+
+    @ManyToMany
+    @JoinTable(name = "users_upvotedComments",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "comment_id"))
+    private List<Comment> upvotedComments;
+
+    @ManyToMany
+    @JoinTable(name = "users_downvotedComments",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "comment_id"))
+    private List<Comment> downvotedComments;
+
+    @OneToMany(mappedBy = "creator")
+    private List<Subseenit> createdSubseenits;
+
+    @ManyToMany
+    @JoinTable(name = "users_moderatedSubseenits",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "subseenit_id"))
+    private List<Subseenit> moderatedSubseenits;
+
+    @ManyToMany
+    @JoinTable(name = "users_subscribedSubseenits",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "subseenit_id"))
+    private List<Subseenit> subscribedSubseenits;
 
     private boolean isAccountNonExpired;
 
@@ -132,30 +147,6 @@ public class User implements UserDetails {
         this.posts = posts;
     }
 
-    public List<Subseenit> getCreatedSubseenits() {
-        return this.createdSubseenits;
-    }
-
-    public void setCreatedSubseenits(List<Subseenit> createdSubseenits) {
-        this.createdSubseenits = createdSubseenits;
-    }
-
-    public List<Subseenit> getModeratedSubseenits() {
-        return this.moderatedSubseenits;
-    }
-
-    public void setModeratedSubseenits(List<Subseenit> moderatedSubseenits) {
-        this.moderatedSubseenits = moderatedSubseenits;
-    }
-
-    public List<Subseenit> getSubscribedSubseenits() {
-        return this.subscribedSubseenits;
-    }
-
-    public void setSubscribedSubseenits(List<Subseenit> subscribedSubseenits) {
-        this.subscribedSubseenits = subscribedSubseenits;
-    }
-
     public List<Post> getUpvotedPosts() {
         return this.upvotedPosts;
     }
@@ -178,6 +169,54 @@ public class User implements UserDetails {
 
     public void setSavedPosts(List<Post> savedPosts) {
         this.savedPosts = savedPosts;
+    }
+
+    public List<Comment> getComments() {
+        return this.comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public List<Comment> getUpvotedComments() {
+        return this.upvotedComments;
+    }
+
+    public void setUpvotedComments(List<Comment> upvotedComments) {
+        this.upvotedComments = upvotedComments;
+    }
+
+    public List<Comment> getDownvotedComments() {
+        return this.downvotedComments;
+    }
+
+    public void setDownvotedComments(List<Comment> downvotedComments) {
+        this.downvotedComments = downvotedComments;
+    }
+
+    public List<Subseenit> getCreatedSubseenits() {
+        return this.createdSubseenits;
+    }
+
+    public void setCreatedSubseenits(List<Subseenit> createdSubseenits) {
+        this.createdSubseenits = createdSubseenits;
+    }
+
+    public List<Subseenit> getModeratedSubseenits() {
+        return this.moderatedSubseenits;
+    }
+
+    public void setModeratedSubseenits(List<Subseenit> moderatedSubseenits) {
+        this.moderatedSubseenits = moderatedSubseenits;
+    }
+
+    public List<Subseenit> getSubscribedSubseenits() {
+        return this.subscribedSubseenits;
+    }
+
+    public void setSubscribedSubseenits(List<Subseenit> subscribedSubseenits) {
+        this.subscribedSubseenits = subscribedSubseenits;
     }
 
     @Override

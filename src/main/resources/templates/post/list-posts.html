@@ -3,21 +3,21 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <body>
 <th:block th:fragment="list-posts">
-    <th:block th:each="post : ${posts}">
-        <div id="allPostsFromData">
+    <div id="allPostsFromData">
+        <th:block th:each="post : ${posts}">
             <div class="row mb-3 p-3 rounded shadow" style="background-color: white">
                 <div class="mr-3">
-                    <input type="text" hidden="hidden" class="postIdInput" th:value="${post.getId()}">
+                    <input type="text" hidden="hidden" class="idInput" th:value="${post.getId()}">
                     <th:block sec:authorize="isAuthenticated()">
-                        <div th:unless="${post.isUpvoted()}" class="arrow-up upvote-button"></div>
-                        <div th:if="${post.isUpvoted()}" class="arrow-up-clicked upvote-button"></div>
+                        <div th:unless="${post.isUpvoted()}" class="arrow-up upvote-button post"></div>
+                        <div th:if="${post.isUpvoted()}" class="arrow-up-clicked upvote-button post"></div>
                     </th:block>
                     <div class="text-center">
-                        <span class="text-muted" th:text="${post.getScore()}"></span>
+                        <span class="text-muted score" th:text="${post.getScore()}"></span>
                     </div>
                     <th:block sec:authorize="isAuthenticated()">
-                        <div th:unless="${post.isDownvoted()}" class="arrow-down downvote-button"></div>
-                        <div th:if="${post.isDownvoted()}" class="arrow-down-clicked downvote-button"></div>
+                        <div th:unless="${post.isDownvoted()}" class="arrow-down downvote-button post"></div>
+                        <div th:if="${post.isDownvoted()}" class="arrow-down-clicked downvote-button post"></div>
                     </th:block>
                 </div>
                 <div class="mr-3">
@@ -38,8 +38,8 @@
                         </a>
                     </th:block>
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
+                <div>
+                    <div>
                         <th:block th:if="${post.getType()} == 'link'">
                             <a th:href="@{${post.getLink()}}" style="text-decoration: none">
                                 <h5 class="mb-0" th:text="${post.getTitle()}" style="color: black;"></h5>
@@ -52,33 +52,34 @@
                             </a>
                         </th:block>
                     </div>
-                    <div class="col-md-12">
-                        <span class="text-muted" style="font-size: 85%">
-                            <span th:text="|Submitted ${post.getSubmittedTimeAgo()} by |"></span>
-                            <a th:href="@{/u/{creatorUsername}(creatorUsername = ${post.getCreator().getUsername()})}"
-                               th:text="|${post.getCreator().getUsername()}|">
-                            </a>
-                            <span th:text=" to "></span>
-                            <a th:href="@{/s/{subseenitName}(subseenitName = ${post.getSubseenit().getName()})}"
-                               th:text="|/s/${post.getSubseenit().getName()}|">
-                            </a>
-                        </span>
+                    <div>
+                    <span class="text-muted" style="font-size: 85%">
+                        <span th:text="|Submitted ${post.getSubmittedTimeAgo()} by |"></span>
+                        <a th:href="@{/u/{creatorUsername}(creatorUsername = ${post.getCreator().getUsername()})}"
+                           th:text="|${post.getCreator().getUsername()}|">
+                        </a>
+                        <span th:text=" to "></span>
+                        <a th:href="@{/s/{subseenitName}(subseenitName = ${post.getSubseenit().getName()})}"
+                           th:text="|/s/${post.getSubseenit().getName()}|">
+                        </a>
+                    </span>
                     </div>
-                    <div class="col-md-12">
-                        <span class="text-muted" style="font-size: 85%">
-                            <a class="mr-1"
-                               th:href="@{/s/{subseenitName}/comments/{postId}(subseenitName = ${post.getSubseenit().getName()}, postId = ${post.getId()})}"
-                               th:text="|${commentsCount} comments|">
-                            </a>
-                            <th:block sec:authorize="isAuthenticated()">
-                                <a class="mr-1" th:href="@{/save/{postId}(postId = ${post.getId()})}">save</a>
-                                <a th:href="@{/report/{postId}(postId = ${post.getId()})}">report</a>
-                            </th:block>
-                        </span>
+                    <div>
+                    <span class="text-muted" style="font-size: 85%">
+                        <a class="mr-1"
+                           th:href="@{/s/{subseenitName}/comments/{postId}(subseenitName = ${post.getSubseenit().getName()}, postId = ${post.getId()})}"
+                           th:text="|${post.getComments().size()} comments|">
+                        </a>
+                        <th:block sec:authorize="isAuthenticated()">
+                            <a class="mr-1" th:href="@{/save/{postId}(postId = ${post.getId()})}">save</a>
+                            <a th:href="@{/report/{postId}(postId = ${post.getId()})}">report</a>
+                        </th:block>
+                    </span>
                     </div>
                 </div>
             </div>
-    </th:block>
+        </th:block>
+    </div>
 </th:block>
 </body>
 </html>

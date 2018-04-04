@@ -43,7 +43,7 @@ public class SubseenitServiceImpl implements SubseenitService {
     }
 
     @Override
-    public long getPagesCount(Subseenit subseenit, int size) {
+    public long getPostsPagesCount(Subseenit subseenit, int size) {
         return (long) Math.ceil((double) subseenit.getPosts().size() / size);
     }
 }

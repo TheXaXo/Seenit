@@ -1,0 +1,12 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="comments">
+    <div id="allCommentsFromData">
+        <th:block th:each="comment : ${comments}">
+            <div th:insert="comment/comment :: comment"></div>
+        </th:block>
+    </div>
+</th:block>
+</body>
+</html>

@@ -13,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -100,8 +99,13 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public long getTotalPagesCount(int size) {
+    public long getAllPostsPagesCount(int size) {
         return (long) Math.ceil((double) this.repository.count() / size);
+    }
+
+    @Override
+    public long getCommentsPagesCount(Post post, int size) {
+        return (long) Math.ceil((double) post.getComments().size() / size);
     }
 
     @Override

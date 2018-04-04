@@ -11,11 +11,17 @@ import com.thexaxo.seenit.services.PostService;
 import com.thexaxo.seenit.services.SubseenitService;
 import com.thexaxo.seenit.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
@@ -75,7 +81,7 @@ public class PostController {
             throw new SubseenitNotFoundException();
         }
 
-        Post post = this.postService.createTextPost(bindingModel, userService.getUserByUsername(principal.getName()), subseenit);
+        Post post = this.postService.createTextPost(bindingModel, this.userService.getUserByUsername(principal.getName()), subseenit);
 
         modelAndView.clear();
         modelAndView.setViewName("redirect:/s/" + subseenit.getName() + "/comments/" + post.getId());
@@ -101,7 +107,7 @@ public class PostController {
             throw new SubseenitNotFoundException();
         }
 
-        Post post = this.postService.createLinkPost(bindingModel, userService.getUserByUsername(principal.getName()), subseenit);
+        Post post = this.postService.createLinkPost(bindingModel, this.userService.getUserByUsername(principal.getName()), subseenit);
 
         modelAndView.clear();
         modelAndView.setViewName("redirect:/s/" + subseenit.getName() + "/comments/" + post.getId());
@@ -109,22 +115,48 @@ public class PostController {
         return modelAndView;
     }
 
-    @GetMapping("/upvote/{postId}")
+    @GetMapping("/upvote/post/{postId}")
     public ResponseEntity upvote(@PathVariable String postId, Principal principal) {
         this.postService.upvote(postId, userService.getUserByUsername(principal.getName()));
 
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @GetMapping("/downvote/{postId}")
+    @GetMapping("/downvote/post/{postId}")
     public ResponseEntity downvote(@PathVariable String postId, Principal principal) {
         this.postService.downvote(postId, userService.getUserByUsername(principal.getName()));
 
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @GetMapping("/s/{name}/posts")
+    public ModelAndView getPostsFromSubseenit(ModelAndView modelAndView, @PathVariable String name, Principal principal, @PageableDefault(size = 10) Pageable pageable) {
+        User user;
+        Page<Post> posts = null;
+
+        if (name.equals("all")) {
+            posts = this.postService.listAllByPage(pageable);
+        } else {
+            Subseenit subseenit = this.subseenitService.findOneSubseenitByName(name);
+
+            if (subseenit != null) {
+                posts = this.postService.listAllBySubseenitAndPage(subseenit, pageable);
+            }
+        }
+
+        if (principal != null && posts != null) {
+            user = this.userService.getUserByUsername(principal.getName());
+            this.postService.populateUpvotedDownvotedFields(posts, user);
+        }
+
+        modelAndView.addObject("posts", posts);
+        modelAndView.setViewName("post/list-posts");
+
+        return modelAndView;
+    }
+
     @GetMapping("/s/{subseenitName}/comments/{postId}")
-    public ModelAndView postPage(@PathVariable String subseenitName, @PathVariable String postId, ModelAndView modelAndView, Principal principal) {
+    public ModelAndView postPage(@PathVariable String subseenitName, @PathVariable String postId, ModelAndView modelAndView, Principal principal, @PageableDefault(size = 10) Pageable pageable) {
         Subseenit subseenit = this.subseenitService.findOneSubseenitByName(subseenitName);
 
         if (subseenit == null) {
@@ -143,6 +175,9 @@ public class PostController {
             this.postService.populateUpvotedDownvotedFields(post, user);
             modelAndView.addObject("isSubscribed", user.isSubscribedTo(subseenit.getName()));
         }
+
+        modelAndView.addObject("totalPages", this.postService.getCommentsPagesCount(post, pageable.getPageSize()));
+        modelAndView.addObject("currentPage", pageable.getPageNumber());
 
         modelAndView.addObject("post", post);
         modelAndView.addObject("view", "post/post-page :: post-page");

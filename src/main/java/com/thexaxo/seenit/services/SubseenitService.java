@@ -9,5 +9,5 @@ public interface SubseenitService {
 
     boolean create(CreateSubseenitBindingModel bindingModel, User loggedUser);
 
-    long getPagesCount(Subseenit subseenit, int size);
+    long getPostsPagesCount(Subseenit subseenit, int size);
 }

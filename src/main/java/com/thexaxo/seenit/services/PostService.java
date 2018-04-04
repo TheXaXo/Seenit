@@ -8,8 +8,6 @@ import com.thexaxo.seenit.models.SubmitTextPostBindingModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-
 public interface PostService {
     Post createTextPost(SubmitTextPostBindingModel bindingModel, User creator, Subseenit subseenit);
 
@@ -23,7 +21,9 @@ public interface PostService {
 
     Page<Post> listAllBySubseenitAndPage(Subseenit subseenit, Pageable pageable);
 
-    long getTotalPagesCount(int size);
+    long getAllPostsPagesCount(int size);
+
+    long getCommentsPagesCount(Post post, int size);
 
     Post findById(String postId);
 

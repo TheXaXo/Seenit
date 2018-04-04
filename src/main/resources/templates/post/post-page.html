@@ -5,6 +5,8 @@
 <th:block th:fragment="post-page">
     <script th:src="@{/js/upvoteDownvoteButtons.js}"></script>
     <script th:src="@{/js/search.js}"></script>
+    <script th:src="@{/js/addComment.js}"></script>
+    <script th:src="@{/js/commentsData.js}"></script>
     <div th:class="container-fluid">
         <th:block th:if="${subseenitName}" th:include="fragments/subreddit-banner :: subreddit-banner">
         </th:block>
@@ -15,18 +17,21 @@
                         <div class="col-md-12">
                             <div class="row">
                                 <div class="mr-3">
-                                    <input type="text" hidden="hidden" class="postIdInput" th:value="${post.getId()}">
+                                    <input type="text" hidden="hidden" class="idInput" th:value="${post.getId()}">
                                     <th:block sec:authorize="isAuthenticated()">
-                                        <div th:unless="${post.isUpvoted()}" class="arrow-up upvote-button"></div>
-                                        <div th:if="${post.isUpvoted()}" class="arrow-up-clicked upvote-button"></div>
+                                        <div th:unless="${post.isUpvoted()}"
+                                             class="arrow-up upvote-button post"></div>
+                                        <div th:if="${post.isUpvoted()}"
+                                             class="arrow-up-clicked upvote-button post"></div>
                                     </th:block>
                                     <div class="text-center">
-                                        <span class="text-muted" th:text="${post.getScore()}"></span>
+                                        <span class="text-muted score" th:text="${post.getScore()}"></span>
                                     </div>
                                     <th:block sec:authorize="isAuthenticated()">
-                                        <div th:unless="${post.isDownvoted()}" class="arrow-down downvote-button"></div>
+                                        <div th:unless="${post.isDownvoted()}"
+                                             class="arrow-down downvote-button post"></div>
                                         <div th:if="${post.isDownvoted()}"
-                                             class="arrow-down-clicked downvote-button"></div>
+                                             class="arrow-down-clicked downvote-button post"></div>
                                     </th:block>
                                 </div>
                                 <div class="mr-3">
@@ -49,8 +54,8 @@
                                         </a>
                                     </th:block>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-12">
+                                <div>
+                                    <div>
                                         <th:block th:if="${post.getType()} == 'link'">
                                             <a th:href="@{${post.getLink()}}" style="text-decoration: none">
                                                 <h5 class="mb-0" th:text="${post.getTitle()}"
@@ -61,7 +66,7 @@
                                             <h5 class="mb-0" th:text="${post.getTitle()}" style="color: black"></h5>
                                         </th:block>
                                     </div>
-                                    <div class="col-md-12">
+                                    <div>
                                         <span class="text-muted" style="font-size: 85%">
                                             <span th:text="|Submitted ${post.getSubmittedTimeAgo()} by |"></span>
                                             <a th:href="@{/u/{creatorUsername}(creatorUsername = ${post.getCreator().getUsername()})}"
@@ -73,9 +78,9 @@
                                             </a>
                                         </span>
                                     </div>
-                                    <div class="col-md-12">
+                                    <div>
                                         <span class="text-muted" style="font-size: 85%">
-                                            <a class="mr-1" th:text="|${commentsCount} comments|"></a>
+                                            <a class="mr-1" th:text="|${post.getComments().size()} comments|"></a>
                                             <th:block sec:authorize="isAuthenticated()">
                                                 <a class="mr-1" th:href="@{/save/{postId}(postId = ${post.getId()})}">save</a>
                                                 <a th:href="@{/report/{postId}(postId = ${post.getId()})}">report</a>
@@ -95,43 +100,30 @@
                     </div>
                     <div class="row mb-3 p-3 rounded shadow" style="background-color: white">
                         <div class="col-md-12">
-                            <form>
+                            <form id="addCommentForm">
                                 <div class="form-group">
-                                    <textarea class="form-control" rows="5" placeholder="Enter comment"></textarea>
+                                    <textarea sec:authorize="isAuthenticated()" id="contentTextarea"
+                                              class="form-control"
+                                              rows="5" placeholder="Enter comment"></textarea>
+                                    <textarea sec:authorize="isAnonymous()" id="contentTextarea" class="form-control"
+                                              rows="5" placeholder="You need to be logged in in order to comment."
+                                              disabled></textarea>
+                                    <small style="display: none" id="addCommentError" class="form-text text-danger">
+                                        Comment should be
+                                        between 3 and 65535 characters.
+                                    </small>
                                 </div>
-                                <button type="submit" class="btn btn-success">
+                                <button sec:authorize="isAuthenticated()" type="submit" class="btn btn-success">Add
+                                </button>
+                                <button sec:authorize="isAnonymous()" disabled type="submit" class="btn btn-success">
                                     Add
                                 </button>
                             </form>
                         </div>
                     </div>
-                    <div class="row mb-3 p-3 rounded shadow" style="background-color: white">
-                        <div class="mr-3">
-                            <input type="text" hidden="hidden" class="postIdInput" th:value="${post.getId()}">
-                            <th:block sec:authorize="isAuthenticated()">
-                                <div th:unless="${post.isUpvoted()}" class="arrow-up upvote-button"></div>
-                                <div th:if="${post.isUpvoted()}" class="arrow-up-clicked upvote-button"></div>
-                            </th:block>
-                            <div class="text-center">
-                                <span class="text-muted" th:text="${post.getScore()}"></span>
-                            </div>
-                            <th:block sec:authorize="isAuthenticated()">
-                                <div th:unless="${post.isDownvoted()}" class="arrow-down downvote-button"></div>
-                                <div th:if="${post.isDownvoted()}"
-                                     class="arrow-down-clicked downvote-button"></div>
-                            </th:block>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <a th:href="@{/}" class="mr-1">TheXaXo</a>
-                                <span th:text="|12 Points|" class="text-muted mr-1"></span>
-                                <span th:text="|4 hours ago|" class="text-muted mr-1"></span>
-                            </div>
-                            <div class="col-md-12">
-                                Random comment text
-                            </div>
-                        </div>
-                    </div>
+                    <input type="hidden" id="currentPage" th:value="${currentPage}"/>
+                    <input type="hidden" id="totalPages" th:value="${totalPages}"/>
+                    <div id="commentsDiv"></div>
                 </div>
                 <div class="col-md-3" th:include="fragments/sidebar :: sidebar"></div>
             </div>

@@ -1,0 +1,33 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<body>
+<div id="commentData">
+    <div class="row mb-3 p-3 rounded shadow" style="background-color: white" th:fragment="comment">
+        <div class="mr-3">
+            <input type="text" hidden="hidden" class="idInput" th:value="${comment.getId()}">
+            <th:block sec:authorize="isAuthenticated()">
+                <div class="mb-2">
+                    <div th:unless="${comment.isUpvoted()}" class="arrow-up upvote-button comment"></div>
+                    <div th:if="${comment.isUpvoted()}" class="arrow-up-clicked upvote-button comment"></div>
+                </div>
+                <div>
+                    <div th:unless="${comment.isDownvoted()}" class="arrow-down downvote-button comment"></div>
+                    <div th:if="${comment.isDownvoted()}" class="arrow-down-clicked downvote-button comment"></div>
+                </div>
+            </th:block>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <a th:href="@{/u/{username}(username = ${comment.getCreator().getUsername()})}"
+                   class="mr-1">TheXaXo</a>
+                <span th:text="${comment.getScore()}" class="text-muted score"></span>
+                <span class="text-muted mr-1">Points</span>
+                <span th:text="${comment.getSubmittedTimeAgo()}" class="text-muted mr-1"></span>
+            </div>
+            <div class="col-md-12" th:text="${comment.getContent()}"></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,6 +1,5 @@
 package com.thexaxo.seenit.controllers;
 
-import com.thexaxo.seenit.entities.Post;
 import com.thexaxo.seenit.entities.Subseenit;
 import com.thexaxo.seenit.entities.User;
 import com.thexaxo.seenit.exceptions.SubseenitNotFoundException;
@@ -8,7 +7,6 @@ import com.thexaxo.seenit.models.CreateSubseenitBindingModel;
 import com.thexaxo.seenit.services.PostService;
 import com.thexaxo.seenit.services.SubseenitService;
 import com.thexaxo.seenit.services.UserService;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
@@ -47,55 +45,26 @@ public class SubseenitController {
 
         if (name.equals("all")) {
             modelAndView.addObject("subseenitName", "all");
-            modelAndView.addObject("totalPages", this.postService.getTotalPagesCount(pageable.getPageSize()));
+            modelAndView.addObject("totalPages", this.postService.getAllPostsPagesCount(pageable.getPageSize()));
         } else {
             Subseenit subseenit = this.subseenitService.findOneSubseenitByName(name);
 
-            if (subseenit != null) {
-                if (principal != null) {
-                    user = this.userService.getUserByUsername(principal.getName());
-                    modelAndView.addObject("isSubscribed", user.isSubscribedTo(subseenit.getName()));
-                }
-
-                modelAndView.addObject("subseenitName", subseenit.getName());
-                modelAndView.addObject("totalPages", this.subseenitService.getPagesCount(subseenit, pageable.getPageSize()));
+            if (subseenit == null) {
+                throw new SubseenitNotFoundException();
             }
+
+            if (principal != null) {
+                user = this.userService.getUserByUsername(principal.getName());
+                modelAndView.addObject("isSubscribed", user.isSubscribedTo(subseenit.getName()));
+            }
+
+            modelAndView.addObject("subseenitName", subseenit.getName());
+            modelAndView.addObject("totalPages", this.subseenitService.getPostsPagesCount(subseenit, pageable.getPageSize()));
         }
 
         modelAndView.addObject("currentPage", pageable.getPageNumber());
         modelAndView.addObject("view", "subseenit/subseenit :: subseenit");
         modelAndView.setViewName("base-layout");
-
-        return modelAndView;
-    }
-
-    @GetMapping("/s/{name}/posts")
-    public ModelAndView getPostsFromSubseenit(ModelAndView modelAndView, @PathVariable String name, Principal principal, @PageableDefault(size = 10) Pageable pageable) {
-        User user;
-        Page<Post> posts = null;
-
-        if (name.equals("all")) {
-            posts = this.postService.listAllByPage(pageable);
-
-            if (principal != null) {
-                user = this.userService.getUserByUsername(principal.getName());
-                this.postService.populateUpvotedDownvotedFields(posts, user);
-            }
-        } else {
-            Subseenit subseenit = this.subseenitService.findOneSubseenitByName(name);
-
-            if (subseenit != null) {
-                posts = this.postService.listAllBySubseenitAndPage(subseenit, pageable);
-            }
-        }
-
-        if (principal != null && posts != null) {
-            user = this.userService.getUserByUsername(principal.getName());
-            this.postService.populateUpvotedDownvotedFields(posts, user);
-        }
-
-        modelAndView.addObject("posts", posts);
-        modelAndView.setViewName("post/list-posts");
 
         return modelAndView;
     }
@@ -117,12 +86,17 @@ public class SubseenitController {
             return modelAndView;
         }
 
+        if (bindingModel.getName().equals("all") || bindingModel.getName().equals("front")) {
+            modelAndView.addObject("alreadyExists", true);
+
+            return modelAndView;
+        }
+
         User loggedUser = this.userService.getUserByUsername(principal.getName());
         boolean created = this.subseenitService.create(bindingModel, loggedUser);
 
         if (!created) {
             modelAndView.addObject("alreadyExists", true);
-            modelAndView.setViewName("base-layout");
 
             return modelAndView;
         }

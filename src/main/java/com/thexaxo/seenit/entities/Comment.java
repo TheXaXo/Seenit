@@ -7,13 +7,12 @@ import javax.persistence.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "posts")
-public class Post {
+@Table(name = "comments")
+public class Comment {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
@@ -22,32 +21,17 @@ public class Post {
     )
     private String id;
 
-    @Column
-    private String title;
-
     @Column(columnDefinition = "TEXT")
-    private String text;
-
-    @Column
-    private String link;
-
-    @Column
-    private String thumbnailUrl;
+    private String content;
 
     @ManyToOne
-    private Subseenit subseenit;
+    private Post post;
 
     @ManyToOne
     private User creator;
 
     @Column
     private LocalDateTime creationDate;
-
-    @Column
-    private String type;
-
-    @OneToMany(mappedBy = "post")
-    private List<Comment> comments;
 
     @Transient
     private int score;
@@ -58,16 +42,13 @@ public class Post {
     @Transient
     private boolean isDownvoted;
 
-    @ManyToMany(mappedBy = "upvotedPosts")
+    @ManyToMany(mappedBy = "upvotedComments")
     private List<User> usersUpvoted;
 
-    @ManyToMany(mappedBy = "downvotedPosts")
+    @ManyToMany(mappedBy = "downvotedComments")
     private List<User> usersDownvoted;
 
-    @ManyToMany(mappedBy = "savedPosts")
-    private List<User> usersSaved;
-
-    public Post() {
+    public Comment() {
 
     }
 
@@ -79,44 +60,20 @@ public class Post {
         this.id = id;
     }
 
-    public String getTitle() {
-        return this.title;
+    public String getContent() {
+        return this.content;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public String getText() {
-        return this.text;
+    public Post getPost() {
+        return this.post;
     }
 
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public String getLink() {
-        return this.link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
-    }
-
-    public String getThumbnailUrl() {
-        return this.thumbnailUrl;
-    }
-
-    public void setThumbnailUrl(String thumbnailUrl) {
-        this.thumbnailUrl = thumbnailUrl;
-    }
-
-    public Subseenit getSubseenit() {
-        return this.subseenit;
-    }
-
-    public void setSubseenit(Subseenit subseenit) {
-        this.subseenit = subseenit;
+    public void setPost(Post post) {
+        this.post = post;
     }
 
     public User getCreator() {
@@ -135,24 +92,8 @@ public class Post {
         this.creationDate = creationDate;
     }
 
-    public String getType() {
-        return this.type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public List<Comment> getComments() {
-        return this.comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
-
     public int getScore() {
-        return this.usersUpvoted.size() - this.usersDownvoted.size();
+        return this.getUsersUpvoted().size() - this.getUsersDownvoted().size();
     }
 
     public boolean isUpvoted() {
@@ -185,14 +126,6 @@ public class Post {
 
     public void setUsersDownvoted(List<User> usersDownvoted) {
         this.usersDownvoted = usersDownvoted;
-    }
-
-    public List<User> getUsersSaved() {
-        return this.usersSaved;
-    }
-
-    public void setUsersSaved(List<User> usersSaved) {
-        this.usersSaved = usersSaved;
     }
 
     public String getSubmittedTimeAgo() {

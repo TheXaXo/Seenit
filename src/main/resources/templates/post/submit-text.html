@@ -19,8 +19,7 @@
                 <label for="text">Text</label>
                 <textarea type="text" class="form-control" id="text" aria-describedby="textError"
                           placeholder="Enter text"
-                          name="text" th:value="*{text}" rows="15">
-                </textarea>
+                          name="text" th:value="*{text}" rows="15"></textarea>
                 <small th:if="${#fields.hasErrors('text')}" id="textError" class="form-text text-danger">Text should be
                     between 3 and 65535 characters.
                 </small>
