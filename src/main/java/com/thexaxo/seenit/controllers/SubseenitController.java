@@ -9,6 +9,7 @@ import com.thexaxo.seenit.services.SubseenitService;
 import com.thexaxo.seenit.services.UserService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 public class SubseenitController {
@@ -119,6 +121,18 @@ public class SubseenitController {
         this.userService.subscribe(subseenit, loggedUser);
 
         modelAndView.setViewName("redirect:/s/" + subseenitName);
+        return modelAndView;
+    }
+
+    @GetMapping("/subseenits/subscribed")
+    @PreAuthorize("isAuthenticated()")
+    public ModelAndView getSubscribedSubseenits(ModelAndView modelAndView, Principal principal) {
+        User user = this.userService.getUserByUsername(principal.getName());
+        List<Subseenit> subscribedSubseenits = user.getSubscribedSubseenits();
+
+        modelAndView.addObject("subseenits", subscribedSubseenits);
+        modelAndView.setViewName("subseenit/subscribed");
+
         return modelAndView;
     }
 }

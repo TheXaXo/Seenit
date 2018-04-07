@@ -21,7 +21,7 @@ public class GlobalExceptionController {
             response.setStatus(e.getClass().getAnnotation(ResponseStatus.class).code().value());
         } else {
             errorMessage = DEFAULT_ERROR_MESSAGE;
-            response.setStatus(HttpStatus.OK.value());
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
 
         ModelAndView modelAndView = new ModelAndView();
