@@ -3,11 +3,11 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <body>
 <th:block th:fragment="post-page">
-    <script th:src="@{/js/upvoteDownvoteButtons.js}"></script>
+    <script th:src="@{/js/upvote-downvote-buttons.js}"></script>
     <script th:src="@{/js/search.js}"></script>
-    <script th:src="@{/js/addComment.js}"></script>
-    <script th:src="@{/js/commentsData.js}"></script>
-    <script th:src="@{/js/subscribedSubseenitsData.js}"></script>
+    <script th:src="@{/js/add-comment.js}"></script>
+    <script th:src="@{/js/comments-data.js}"></script>
+    <script th:src="@{/js/subscribed-subseenits-data.js}"></script>
     <div th:class="container-fluid">
         <th:block th:if="${subseenitName}" th:include="fragments/subseenit-banner :: subseenit-banner">
         </th:block>
@@ -122,7 +122,6 @@
                             </form>
                         </div>
                     </div>
-                    <input type="hidden" id="currentPage" th:value="${currentPage}"/>
                     <input type="hidden" id="totalPages" th:value="${totalPages}"/>
                     <div id="commentsDiv"></div>
                 </div>

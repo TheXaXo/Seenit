@@ -64,7 +64,6 @@ public class SubseenitController {
             modelAndView.addObject("totalPages", this.subseenitService.getPostsPagesCount(subseenit, pageable.getPageSize()));
         }
 
-        modelAndView.addObject("currentPage", pageable.getPageNumber());
         modelAndView.addObject("view", "subseenit/subseenit :: subseenit");
         modelAndView.setViewName("base-layout");
 

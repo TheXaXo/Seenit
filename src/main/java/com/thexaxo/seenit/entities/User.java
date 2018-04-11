@@ -1,11 +1,16 @@
 package com.thexaxo.seenit.entities;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.ocpsoft.prettytime.PrettyTime;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -28,6 +33,9 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private String email;
+
+    @Column
+    private LocalDateTime registrationDate;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
@@ -86,6 +94,12 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "subseenit_id"))
     private List<Subseenit> subscribedSubseenits;
 
+    @Transient
+    private int postKarma;
+
+    @Transient
+    private int commentKarma;
+
     private boolean isAccountNonExpired;
 
     private boolean isAccountNonLocked;
@@ -128,6 +142,14 @@ public class User implements UserDetails {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public LocalDateTime getRegistrationDate() {
+        return this.registrationDate;
+    }
+
+    public void setRegistrationDate(LocalDateTime registrationDate) {
+        this.registrationDate = registrationDate;
     }
 
     @Override
@@ -219,6 +241,18 @@ public class User implements UserDetails {
         this.subscribedSubseenits = subscribedSubseenits;
     }
 
+    public int getPostKarma() {
+        return this.posts.stream()
+                .mapToInt(Post::getScore)
+                .sum();
+    }
+
+    public int getCommentKarma() {
+        return this.comments.stream()
+                .mapToInt(Comment::getScore)
+                .sum();
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return this.isAccountNonExpired;
@@ -258,5 +292,14 @@ public class User implements UserDetails {
     public boolean isSubscribedTo(String subseenitName) {
         return this.getSubscribedSubseenits().stream()
                 .anyMatch(s -> s.getName().equals(subseenitName));
+    }
+
+    public String getRegisteredTimeAgo() {
+        PrettyTime p = new PrettyTime();
+
+        Instant instant = this.getRegistrationDate().atZone(ZoneId.systemDefault()).toInstant();
+        Date date = Date.from(instant);
+
+        return p.format(date);
     }
 }

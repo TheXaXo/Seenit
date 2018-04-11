@@ -49,3 +49,22 @@
     color: white;
     text-shadow: 0px 4px 3px rgba(0, 0, 0, 0.4), 0px 8px 13px rgba(0, 0, 0, 0.1), 0px 18px 23px rgba(0, 0, 0, 0.1);
 }
+
+.scroll-to-top {
+    display: none;
+    width: 50px;
+    height: 50px;
+    text-indent: -9999px;
+    position: fixed;
+    z-index: 999;
+    right: 7%;
+    bottom: 10%;
+    background: #94BFCD url("/images/up-arrow.png") no-repeat center 43%;
+    -webkit-border-radius: 30px;
+    -moz-border-radius: 30px;
+    border-radius: 30px;
+}
+
+.scroll-to-top:hover {
+    background: #85abb8 url("/images/up-arrow.png") no-repeat center 43%;
+}

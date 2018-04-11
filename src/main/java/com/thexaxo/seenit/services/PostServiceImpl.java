@@ -99,6 +99,21 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public Page<Post> listAllByCreator(User creator, Pageable pageable) {
+        return this.repository.findAllByCreator(creator, pageable);
+    }
+
+    @Override
+    public Page<Post> listAllUpvotedByUser(User user, Pageable pageable) {
+        return this.repository.findAllByUsersUpvoted(user, pageable);
+    }
+
+    @Override
+    public Page<Post> listAllDownvotedByUser(User user, Pageable pageable) {
+        return this.repository.findAllByUsersDownvoted(user, pageable);
+    }
+
+    @Override
     public long getAllPostsPagesCount(int size) {
         return (long) Math.ceil((double) this.repository.count() / size);
     }

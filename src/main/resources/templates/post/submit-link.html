@@ -6,6 +6,7 @@
     <script th:src="@{/js/thumbnail-resolver.js}"></script>
     <div class="container mt-5">
         <h1>Submit a new link</h1>
+        <hr>
         <form th:id="submitLinkForm" th:action="@{/submit/link}" th:method="POST" th:object="${post}">
             <div class="form-group">
                 <label for="title">Title</label>

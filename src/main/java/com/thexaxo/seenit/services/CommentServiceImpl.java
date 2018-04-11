@@ -43,6 +43,21 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    public Page<Comment> listAllByCreator(User creator, Pageable pageable) {
+        return this.repository.findAllByCreator(creator, pageable);
+    }
+
+    @Override
+    public Page<Comment> listAllUpvotedByUser(User user, Pageable pageable) {
+        return this.repository.findAllByUsersUpvoted(user, pageable);
+    }
+
+    @Override
+    public Page<Comment> listAllDownvotedByUser(User user, Pageable pageable) {
+        return this.repository.findAllByUsersDownvoted(user, pageable);
+    }
+
+    @Override
     public void upvote(String commentId, User user) {
         Comment comment = this.repository.findCommentById(commentId);
 

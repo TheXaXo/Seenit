@@ -4,6 +4,7 @@
 <th:block th:fragment="create">
     <div class="container mt-5">
         <h1>Create Subseenit</h1>
+        <hr>
         <form th:action="@{/subseenits/create}" th:method="POST" th:object="${subseenit}">
             <div class="form-group">
                 <label for="name">Name</label>

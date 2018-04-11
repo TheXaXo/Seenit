@@ -3,7 +3,7 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <body>
 <th:block th:fragment="list-posts">
-    <div id="allPostsFromData">
+    <div id="content">
         <th:block th:each="post : ${posts}">
             <div class="row mb-3 p-3 rounded shadow" style="background-color: white">
                 <div class="mr-3">

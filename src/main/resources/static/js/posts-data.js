@@ -1,3 +1,5 @@
+let currentPage = 0;
+
 $(document).ready(loadFirstPage);
 
 $(window).scroll(function () {
@@ -12,15 +14,13 @@ function loadFirstPage() {
 
 function loadPostsOnScroll() {
     let totalPages = parseInt($('#totalPages').val());
-    let currentPageInput = $('#currentPage');
-    let currentPage = parseInt($(currentPageInput).val());
     let nextPage = currentPage + 1;
 
     if (nextPage >= totalPages) {
         return;
     }
 
-    $(currentPageInput).val(nextPage);
+    currentPage = nextPage;
     loadPage(nextPage);
 }
 
@@ -29,7 +29,7 @@ function loadPage(pageNumber) {
     let url = "/" + (location.pathname).substr(1) + "/posts" + location.search + "?page=" + pageNumber;
 
     $.get(url, function (data) {
-        let posts = $(data).filter("#allPostsFromData");
+        let posts = $(data).filter("#content");
         $(postsDiv).append(posts.children());
     });
 }

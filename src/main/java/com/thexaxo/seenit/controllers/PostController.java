@@ -5,6 +5,7 @@ import com.thexaxo.seenit.entities.Subseenit;
 import com.thexaxo.seenit.entities.User;
 import com.thexaxo.seenit.exceptions.PostNotFoundException;
 import com.thexaxo.seenit.exceptions.SubseenitNotFoundException;
+import com.thexaxo.seenit.exceptions.UserNotFoundException;
 import com.thexaxo.seenit.models.SubmitLinkBindingModel;
 import com.thexaxo.seenit.models.SubmitTextPostBindingModel;
 import com.thexaxo.seenit.services.PostService;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -155,6 +157,77 @@ public class PostController {
         return modelAndView;
     }
 
+    @GetMapping("/u/{username}/posts")
+    public ModelAndView getPostsSubmittedByUser(ModelAndView modelAndView, @PathVariable String username, Principal principal, @PageableDefault(size = 10) Pageable pageable) {
+        Page<Post> posts;
+
+        User user = this.userService.getUserByUsername(username);
+
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
+
+        posts = this.postService.listAllByCreator(user, pageable);
+
+        if (principal != null && posts != null) {
+            User loggedUser = this.userService.getUserByUsername(principal.getName());
+            this.postService.populateUpvotedDownvotedFields(posts, loggedUser);
+        }
+
+        modelAndView.addObject("posts", posts);
+        modelAndView.setViewName("post/list-posts");
+
+        return modelAndView;
+    }
+
+    @GetMapping("/u/{username}/posts/upvoted")
+    @PreAuthorize("isAuthenticated()")
+    public ModelAndView getPostsUpvotedByUser(ModelAndView modelAndView, @PathVariable String username, Principal principal, @PageableDefault(size = 10) Pageable pageable) {
+        if (!principal.getName().equals(username)) {
+            throw new IllegalArgumentException();
+        }
+
+        Page<Post> posts;
+
+        User user = this.userService.getUserByUsername(username);
+
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
+
+        posts = this.postService.listAllUpvotedByUser(user, pageable);
+        this.postService.populateUpvotedDownvotedFields(posts, user);
+
+        modelAndView.addObject("posts", posts);
+        modelAndView.setViewName("post/list-posts");
+
+        return modelAndView;
+    }
+
+    @GetMapping("/u/{username}/posts/downvoted")
+    @PreAuthorize("isAuthenticated()")
+    public ModelAndView getPostsDownvotedByUser(ModelAndView modelAndView, @PathVariable String username, Principal principal, @PageableDefault(size = 10) Pageable pageable) {
+        if (!principal.getName().equals(username)) {
+            throw new IllegalArgumentException();
+        }
+
+        Page<Post> posts;
+
+        User user = this.userService.getUserByUsername(username);
+
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
+
+        posts = this.postService.listAllDownvotedByUser(user, pageable);
+        this.postService.populateUpvotedDownvotedFields(posts, user);
+
+        modelAndView.addObject("posts", posts);
+        modelAndView.setViewName("post/list-posts");
+
+        return modelAndView;
+    }
+
     @GetMapping("/s/{subseenitName}/comments/{postId}")
     public ModelAndView postPage(@PathVariable String subseenitName, @PathVariable String postId, ModelAndView modelAndView, Principal principal, @PageableDefault(size = 10) Pageable pageable) {
         Subseenit subseenit = this.subseenitService.findOneSubseenitByName(subseenitName);
@@ -177,8 +250,6 @@ public class PostController {
         }
 
         modelAndView.addObject("totalPages", this.postService.getCommentsPagesCount(post, pageable.getPageSize()));
-        modelAndView.addObject("currentPage", pageable.getPageNumber());
-
         modelAndView.addObject("post", post);
         modelAndView.addObject("view", "post/post-page :: post-page");
         modelAndView.addObject("subseenitName", subseenit.getName());

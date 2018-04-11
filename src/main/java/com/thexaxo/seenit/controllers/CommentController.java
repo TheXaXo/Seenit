@@ -7,6 +7,7 @@ import com.thexaxo.seenit.entities.User;
 import com.thexaxo.seenit.exceptions.InvalidCommentContentException;
 import com.thexaxo.seenit.exceptions.PostNotFoundException;
 import com.thexaxo.seenit.exceptions.SubseenitNotFoundException;
+import com.thexaxo.seenit.exceptions.UserNotFoundException;
 import com.thexaxo.seenit.models.AddCommentBindingModel;
 import com.thexaxo.seenit.services.CommentService;
 import com.thexaxo.seenit.services.PostService;
@@ -90,6 +91,77 @@ public class CommentController {
 
         modelAndView.addObject("comments", comments);
         modelAndView.setViewName("comment/comments :: comments");
+
+        return modelAndView;
+    }
+
+    @GetMapping("/u/{username}/comments")
+    public ModelAndView getCommentsSubmittedByUser(ModelAndView modelAndView, @PathVariable String username, Principal principal, @PageableDefault(size = 10) Pageable pageable) {
+        Page<Comment> comments;
+
+        User user = this.userService.getUserByUsername(username);
+
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
+
+        comments = this.commentService.listAllByCreator(user, pageable);
+
+        if (principal != null && comments != null) {
+            User loggedUser = this.userService.getUserByUsername(principal.getName());
+            this.commentService.populateUpvotedDownvotedFields(comments, loggedUser);
+        }
+
+        modelAndView.addObject("comments", comments);
+        modelAndView.setViewName("comment/comments :: comments");
+
+        return modelAndView;
+    }
+
+    @GetMapping("/u/{username}/comments/upvoted")
+    @PreAuthorize("isAuthenticated()")
+    public ModelAndView getCommentsUpvotedByUser(ModelAndView modelAndView, @PathVariable String username, Principal principal, @PageableDefault(size = 10) Pageable pageable) {
+        if (!principal.getName().equals(username)) {
+            throw new IllegalArgumentException();
+        }
+
+        Page<Comment> comments;
+
+        User user = this.userService.getUserByUsername(username);
+
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
+
+        comments = this.commentService.listAllUpvotedByUser(user, pageable);
+        this.commentService.populateUpvotedDownvotedFields(comments, user);
+
+        modelAndView.addObject("comments", comments);
+        modelAndView.setViewName("comment/comments :: comments");
+
+        return modelAndView;
+    }
+
+    @GetMapping("/u/{username}/comments/downvoted")
+    @PreAuthorize("isAuthenticated()")
+    public ModelAndView getCommentsDownvotedByUser(ModelAndView modelAndView, @PathVariable String username, Principal principal, @PageableDefault(size = 10) Pageable pageable) {
+        if (!principal.getName().equals(username)) {
+            throw new IllegalArgumentException();
+        }
+
+        Page<Comment> comments;
+
+        User user = this.userService.getUserByUsername(username);
+
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
+
+        comments = this.commentService.listAllDownvotedByUser(user, pageable);
+        this.commentService.populateUpvotedDownvotedFields(comments, user);
+
+        modelAndView.addObject("comments", comments);
+        modelAndView.setViewName("comment/comments");
 
         return modelAndView;
     }

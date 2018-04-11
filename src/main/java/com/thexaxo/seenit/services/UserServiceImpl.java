@@ -3,6 +3,7 @@ package com.thexaxo.seenit.services;
 import com.thexaxo.seenit.entities.Role;
 import com.thexaxo.seenit.entities.Subseenit;
 import com.thexaxo.seenit.entities.User;
+import com.thexaxo.seenit.models.ChangePasswordBindingModel;
 import com.thexaxo.seenit.models.RegisterUserBindingModel;
 import com.thexaxo.seenit.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -38,6 +40,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setUsername(bindingModel.getUsername());
         user.setPassword(encoder.encode(bindingModel.getPassword()));
         user.setEmail(bindingModel.getEmail());
+        user.setRegistrationDate(LocalDateTime.now());
         user.setAccountNonExpired(true);
         user.setAccountNonLocked(true);
         user.setCredentialsNonExpired(true);
@@ -102,5 +105,45 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
 
         this.userRepository.saveAndFlush(user);
+    }
+
+    @Override
+    public long getSubmittedPostsPages(User user, int size) {
+        return (long) Math.ceil((double) user.getPosts().size() / size);
+    }
+
+    @Override
+    public long getSubmittedCommentsPages(User user, int size) {
+        return (long) Math.ceil((double) user.getComments().size() / size);
+    }
+
+    @Override
+    public long getUpvotedPostsPages(User user, int size) {
+        return (long) Math.ceil((double) user.getUpvotedPosts().size() / size);
+    }
+
+    @Override
+    public long getDownvotedPostsPages(User user, int size) {
+        return (long) Math.ceil((double) user.getDownvotedPosts().size() / size);
+    }
+
+    @Override
+    public long getUpvotedCommentsPages(User user, int size) {
+        return (long) Math.ceil((double) user.getUpvotedComments().size() / size);
+    }
+
+    @Override
+    public long getDownvotedCommentsPages(User user, int size) {
+        return (long) Math.ceil((double) user.getDownvotedComments().size() / size);
+    }
+
+    @Override
+    public boolean changePassword(ChangePasswordBindingModel bindingModel, User loggedUser) {
+        if (!this.encoder.matches(bindingModel.getCurrentPassword(), loggedUser.getPassword())) {
+            return false;
+        }
+
+        loggedUser.setPassword(this.encoder.encode(bindingModel.getNewPassword()));
+        return true;
     }
 }

@@ -4,6 +4,7 @@
 <th:block th:fragment="register">
     <div class="container mt-5">
         <h1>Register User</h1>
+        <hr>
         <form th:action="@{/register}" th:method="POST" th:object="${user}">
             <div class="form-group">
                 <label for="username">Username</label>

@@ -19,8 +19,10 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <a th:href="@{/u/{username}(username = ${comment.getCreator().getUsername()})}"
-                   class="mr-1">TheXaXo</a>
+                <a class="mr-1"
+                   th:href="@{/u/{username}(username = ${comment.getCreator().getUsername()})}"
+                   th:text="${comment.getCreator().getUsername()}">
+                </a>
                 <span th:text="${comment.getScore()}" class="text-muted score"></span>
                 <span class="text-muted mr-1">Points</span>
                 <span th:text="${comment.getSubmittedTimeAgo()}" class="text-muted mr-1"></span>

@@ -1,9 +1,14 @@
 package com.thexaxo.seenit.controllers;
 
+import com.thexaxo.seenit.entities.User;
+import com.thexaxo.seenit.exceptions.UserNotFoundException;
+import com.thexaxo.seenit.models.ChangePasswordBindingModel;
 import com.thexaxo.seenit.models.LoginUserBindingModel;
 import com.thexaxo.seenit.models.RegisterUserBindingModel;
 import com.thexaxo.seenit.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -11,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.security.Principal;
 
 @Controller
 public class UserController {
@@ -71,6 +77,77 @@ public class UserController {
 
         modelAndView.addObject("view", "user/login :: login");
         modelAndView.setViewName("base-layout");
+
+        return modelAndView;
+    }
+
+    @GetMapping("/u/{username}")
+    public ModelAndView profile(ModelAndView modelAndView, @PathVariable String username, Principal principal, @PageableDefault(size = 10) Pageable pageable) {
+        User user = this.userService.getUserByUsername(username);
+
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
+
+        modelAndView.addObject("user", user);
+        modelAndView.addObject("submittedPostsPages",
+                userService.getSubmittedPostsPages(user, pageable.getPageSize()));
+        modelAndView.addObject("submittedCommentsPages",
+                userService.getSubmittedCommentsPages(user, pageable.getPageSize()));
+
+        if (principal != null && principal.getName().equals(username)) {
+            modelAndView.addObject("upvotedPostsPages",
+                    userService.getUpvotedPostsPages(user, pageable.getPageSize()));
+            modelAndView.addObject("downvotedPostsPages",
+                    userService.getDownvotedPostsPages(user, pageable.getPageSize()));
+            modelAndView.addObject("upvotedCommentsPages",
+                    userService.getUpvotedCommentsPages(user, pageable.getPageSize()));
+            modelAndView.addObject("downvotedCommentsPages",
+                    userService.getDownvotedCommentsPages(user, pageable.getPageSize()));
+        }
+
+        modelAndView.addObject("view", "profile/profile :: profile");
+        modelAndView.setViewName("base-layout");
+
+        return modelAndView;
+    }
+
+    @GetMapping("/user/password/change")
+    @PreAuthorize("isAuthenticated()")
+    public ModelAndView changePassword(ModelAndView modelAndView, @ModelAttribute("user") ChangePasswordBindingModel bindingModel) {
+        modelAndView.addObject("view", "user/password-change :: password-change");
+        modelAndView.setViewName("base-layout");
+
+        return modelAndView;
+    }
+
+    @PostMapping("/user/password/change")
+    @PreAuthorize("isAuthenticated()")
+    public ModelAndView changePasswordConfirm(ModelAndView modelAndView, @Valid @ModelAttribute("user") ChangePasswordBindingModel bindingModel, BindingResult bindingResult, Principal principal) {
+        modelAndView.addObject("view", "user/password-change :: password-change");
+        modelAndView.setViewName("base-layout");
+
+        if (bindingResult.hasErrors()) {
+            return modelAndView;
+        }
+
+        if (!bindingModel.getNewPassword().equals(bindingModel.getConfirmPassword())) {
+            modelAndView.addObject("passwordsDoNotMatch", true);
+            return modelAndView;
+        }
+
+        User loggedUser = this.userService.getUserByUsername(principal.getName());
+
+        boolean hasChanged = this.userService.changePassword(bindingModel, loggedUser);
+
+        if (!hasChanged) {
+            modelAndView.addObject("wrongPassword", true);
+            return modelAndView;
+        }
+
+        modelAndView.clear();
+        modelAndView.setViewName("redirect:/u/" + loggedUser.getUsername());
+
         return modelAndView;
     }
 }

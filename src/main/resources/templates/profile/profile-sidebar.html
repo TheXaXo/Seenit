@@ -1,0 +1,44 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<body>
+<th:block th:fragment="profile-sidebar">
+    <div class="ml-3">
+        <div class="row p-3 rounded mb-4 shadow" style="background-color: white">
+            <div class="col-md-12 text-center">
+                <h1 class="display-4" th:text="|/u/${user.getUsername()}|"></h1>
+                <h1 class="display-4" style="font-size: 1.3rem;"
+                    th:text="|Registered ${user.getRegisteredTimeAgo()}|"></h1>
+                <hr>
+            </div>
+            <div class="col-md-12 text-center">
+                <h1 class="display-4" style="font-size: 1.45rem;">Post / Comment Karma</h1>
+            </div>
+            <div class="col-md-12 text-center">
+                <h1 class="display-4" style="font-size: 1.3rem;"
+                    th:text="|${user.getPostKarma()} / ${user.getCommentKarma()}|"></h1>
+            </div>
+            <th:block sec:authorize="isAuthenticated()">
+                <th:block th:if="${#authentication.getName() == user.getUsername()}">
+                    <div class="col-md-12 mb-2">
+                        <hr>
+                        <a th:href="@{/user/messages}" class="btn btn-primary btn-block">Messages</a>
+                    </div>
+                    <div class="col-md-12">
+                        <a th:href="@{/user/password/change}" class="btn btn-outline-secondary btn-block">Change
+                            password</a>
+                    </div>
+                </th:block>
+                <th:block th:unless="${#authentication.getName() == user.getUsername()}">
+                    <div class="col-md-12 mb-2">
+                        <hr>
+                        <a th:href="@{/u/{username}/message(username = ${user.getUsername()})}"
+                           class="btn btn-primary btn-block">Message</a>
+                    </div>
+                </th:block>
+            </th:block>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

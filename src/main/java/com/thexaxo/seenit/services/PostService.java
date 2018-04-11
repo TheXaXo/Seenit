@@ -21,6 +21,12 @@ public interface PostService {
 
     Page<Post> listAllBySubseenitAndPage(Subseenit subseenit, Pageable pageable);
 
+    Page<Post> listAllByCreator(User creator, Pageable pageable);
+
+    Page<Post> listAllUpvotedByUser(User user, Pageable pageable);
+
+    Page<Post> listAllDownvotedByUser(User user, Pageable pageable);
+
     long getAllPostsPagesCount(int size);
 
     long getCommentsPagesCount(Post post, int size);

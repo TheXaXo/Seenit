@@ -2,7 +2,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <body>
 <th:block th:fragment="comments">
-    <div id="allCommentsFromData">
+    <div id="content">
         <th:block th:each="comment : ${comments}">
             <div th:insert="comment/comment :: comment"></div>
         </th:block>

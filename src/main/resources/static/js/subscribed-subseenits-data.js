@@ -5,7 +5,7 @@ function loadSubscribedSubseenits() {
     let url = "/subseenits/subscribed";
 
     $.get(url, function (data) {
-        let subseenits = $(data).filter("#subscribedSubseenits");
+        let subseenits = $(data).filter("#content");
         $(subscribedSubseenitsDiv).replaceWith(subseenits.children());
     });
 }
