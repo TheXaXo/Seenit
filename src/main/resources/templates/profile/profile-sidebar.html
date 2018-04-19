@@ -22,7 +22,7 @@
                 <th:block th:if="${#authentication.getName() == user.getUsername()}">
                     <div class="col-md-12 mb-2">
                         <hr>
-                        <a th:href="@{/user/messages}" class="btn btn-primary btn-block">Messages</a>
+                        <a th:href="@{/messages}" class="btn btn-primary btn-block">Messages</a>
                     </div>
                     <div class="col-md-12">
                         <a th:href="@{/user/password/change}" class="btn btn-outline-secondary btn-block">Change

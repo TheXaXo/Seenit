@@ -1,0 +1,10 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:id="messages" th:fragment="messages">
+    <th:block th:each="message : ${messages}">
+        <div th:replace="message/message :: message"></div>
+    </th:block>
+</div>
+</body>
+</html>

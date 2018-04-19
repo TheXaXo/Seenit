@@ -68,3 +68,8 @@
 .scroll-to-top:hover {
     background: #85abb8 url("/images/up-arrow.png") no-repeat center 43%;
 }
+
+.btn-info {
+    background-color: #94BFCD;
+    border-color: #94BFCD;
+}

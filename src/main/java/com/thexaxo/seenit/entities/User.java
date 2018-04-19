@@ -94,6 +94,12 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "subseenit_id"))
     private List<Subseenit> subscribedSubseenits;
 
+    @ManyToMany(mappedBy = "participants")
+    private List<Thread> threads;
+
+    @OneToMany(mappedBy = "creator")
+    private List<Message> messages;
+
     @Transient
     private int postKarma;
 
@@ -239,6 +245,22 @@ public class User implements UserDetails {
 
     public void setSubscribedSubseenits(List<Subseenit> subscribedSubseenits) {
         this.subscribedSubseenits = subscribedSubseenits;
+    }
+
+    public List<Thread> getThreads() {
+        return this.threads;
+    }
+
+    public void setThreads(List<Thread> threads) {
+        this.threads = threads;
+    }
+
+    public List<Message> getMessages() {
+        return this.messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
     }
 
     public int getPostKarma() {
