@@ -71,8 +71,19 @@
                            th:text="|${post.getComments().size()} comments|">
                         </a>
                         <th:block sec:authorize="isAuthenticated()">
-                            <a class="mr-1" th:href="@{/save/{postId}(postId = ${post.getId()})}">save</a>
-                            <a th:href="@{/report/{postId}(postId = ${post.getId()})}">report</a>
+                            <input type="text" hidden="hidden" class="idInput"
+                                   th:value="${post.getId()}">
+                            <a class="mr-1" href="#" th:id="savePostButton"
+                               th:text="${post.isSaved()? 'unsave' : 'save'}"></a>
+                            <a class="mr-1" th:href="@{/report/{postId}(postId = ${post.getId()})}">report</a>
+                            <th:block sec:authorize="hasAnyRole('MODERATOR', 'ADMIN', 'GOD')">
+                                <a th:href="@{/delete/{postId}(postId = ${post.getId()})}">delete</a>
+                            </th:block>
+                            <th:block sec:authorize="hasRole('USER')">
+                                <th:block th:if="${#authentication.getName() == post.getCreator().getUsername()}">
+                                    <a th:href="@{/delete/{postId}(postId = ${post.getId()})}">delete</a>
+                                </th:block>
+                            </th:block>
                         </th:block>
                     </span>
                     </div>

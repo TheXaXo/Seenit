@@ -4,6 +4,7 @@
 <th:block th:fragment="profile">
     <script th:src="@{/js/user-profile-data.js}"></script>
     <script th:src="@{/js/upvote-downvote-buttons.js}"></script>
+    <script th:src="@{/js/save-post-button.js}"></script>
     <div th:class="container-fluid">
         <div class="jumbotron">
             <div th:class="row">
@@ -11,6 +12,7 @@
                     <input type="hidden" id="submittedPostsPages" th:value="${submittedPostsPages}"/>
                     <input type="hidden" id="submittedCommentsPages" th:value="${submittedCommentsPages}"/>
                     <th:block th:if="${#authentication.getName() == user.getUsername()}">
+                        <input type="hidden" id="savedPostsPages" th:value="${savedPostsPages}"/>
                         <input type="hidden" id="upvotedPostsPages" th:value="${upvotedPostsPages}"/>
                         <input type="hidden" id="downvotedPostsPages" th:value="${downvotedPostsPages}"/>
                         <input type="hidden" id="upvotedCommentsPages" th:value="${upvotedCommentsPages}"/>
@@ -23,6 +25,9 @@
                             <a class="nav-item nav-link" id="nav-comments-tab" data-toggle="tab" href="#nav-comments"
                                role="tab" aria-controls="nav-comments" aria-selected="false">Comments</a>
                             <th:block th:if="${#authentication.getName() == user.getUsername()}">
+                                <a class="nav-item nav-link" id="nav-posts-saved-tab" data-toggle="tab"
+                                   href="#nav-posts-saved"
+                                   role="tab" aria-controls="nav-posts-upvoted" aria-selected="false">Saved Posts</a>
                                 <a class="nav-item nav-link" id="nav-posts-upvoted-tab" data-toggle="tab"
                                    href="#nav-posts-upvoted"
                                    role="tab" aria-controls="nav-posts-upvoted" aria-selected="false">Upvoted Posts</a>
@@ -49,6 +54,9 @@
                              aria-labelledby="nav-comments-tab">
                         </div>
                         <th:block th:if="${#authentication.getName() == user.getUsername()}">
+                            <div class="tab-pane fade" id="nav-posts-saved" role="tabpanel"
+                                 aria-labelledby="nav-posts-saved-tab">
+                            </div>
                             <div class="tab-pane fade" id="nav-posts-upvoted" role="tabpanel"
                                  aria-labelledby="nav-posts-upvoted-tab">
                             </div>

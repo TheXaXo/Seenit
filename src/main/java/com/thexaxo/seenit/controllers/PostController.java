@@ -131,6 +131,30 @@ public class PostController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @GetMapping("/save/{postId}")
+    public ResponseEntity savePost(@PathVariable String postId, Principal principal) {
+        this.postService.savePost(postId, userService.getUserByUsername(principal.getName()));
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @GetMapping("/delete/{postId}")
+    public ModelAndView deletePost(ModelAndView modelAndView, @PathVariable String postId) {
+        modelAndView.addObject("view", "post/delete :: delete");
+        modelAndView.addObject("postId", postId);
+        modelAndView.setViewName("base-layout");
+
+        return modelAndView;
+    }
+
+    @GetMapping("/delete/{postId}/confirm")
+    public ModelAndView deletePostConfirm(ModelAndView modelAndView, @PathVariable String postId, Principal principal) {
+        this.postService.deletePost(postId, userService.getUserByUsername(principal.getName()));
+
+        modelAndView.setViewName("redirect:/");
+        return modelAndView;
+    }
+
     @GetMapping("/s/{name}/posts")
     public ModelAndView getPostsFromSubseenit(ModelAndView modelAndView, @PathVariable String name, Principal principal, @PageableDefault(size = 10) Pageable pageable) {
         User user;
@@ -148,7 +172,7 @@ public class PostController {
 
         if (principal != null && posts != null) {
             user = this.userService.getUserByUsername(principal.getName());
-            this.postService.populateUpvotedDownvotedFields(posts, user);
+            this.postService.populateUpvotedDownvotedSavedFields(posts, user);
         }
 
         modelAndView.addObject("posts", posts);
@@ -171,7 +195,7 @@ public class PostController {
 
         if (principal != null && posts != null) {
             User loggedUser = this.userService.getUserByUsername(principal.getName());
-            this.postService.populateUpvotedDownvotedFields(posts, loggedUser);
+            this.postService.populateUpvotedDownvotedSavedFields(posts, loggedUser);
         }
 
         modelAndView.addObject("posts", posts);
@@ -196,7 +220,7 @@ public class PostController {
         }
 
         posts = this.postService.listAllUpvotedByUser(user, pageable);
-        this.postService.populateUpvotedDownvotedFields(posts, user);
+        this.postService.populateUpvotedDownvotedSavedFields(posts, user);
 
         modelAndView.addObject("posts", posts);
         modelAndView.setViewName("post/list-posts");
@@ -220,7 +244,31 @@ public class PostController {
         }
 
         posts = this.postService.listAllDownvotedByUser(user, pageable);
-        this.postService.populateUpvotedDownvotedFields(posts, user);
+        this.postService.populateUpvotedDownvotedSavedFields(posts, user);
+
+        modelAndView.addObject("posts", posts);
+        modelAndView.setViewName("post/list-posts");
+
+        return modelAndView;
+    }
+
+    @GetMapping("/u/{username}/posts/saved")
+    @PreAuthorize("isAuthenticated()")
+    public ModelAndView getPostsSavedByUser(ModelAndView modelAndView, @PathVariable String username, Principal principal, @PageableDefault(size = 10) Pageable pageable) {
+        if (!principal.getName().equals(username)) {
+            throw new IllegalArgumentException();
+        }
+
+        Page<Post> posts;
+
+        User user = this.userService.getUserByUsername(username);
+
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
+
+        posts = this.postService.listAllSavedByUser(user, pageable);
+        this.postService.populateUpvotedDownvotedSavedFields(posts, user);
 
         modelAndView.addObject("posts", posts);
         modelAndView.setViewName("post/list-posts");
@@ -245,7 +293,7 @@ public class PostController {
         if (principal != null) {
             User user = this.userService.getUserByUsername(principal.getName());
 
-            this.postService.populateUpvotedDownvotedFields(post, user);
+            this.postService.populateUpvotedDownvotedSavedFields(post, user);
             modelAndView.addObject("isSubscribed", user.isSubscribedTo(subseenit.getName()));
         }
 

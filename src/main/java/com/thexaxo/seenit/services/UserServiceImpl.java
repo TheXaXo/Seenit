@@ -3,10 +3,16 @@ package com.thexaxo.seenit.services;
 import com.thexaxo.seenit.entities.Role;
 import com.thexaxo.seenit.entities.Subseenit;
 import com.thexaxo.seenit.entities.User;
+import com.thexaxo.seenit.exceptions.UserNotFoundException;
 import com.thexaxo.seenit.models.ChangePasswordBindingModel;
+import com.thexaxo.seenit.models.EditUserBindingModel;
 import com.thexaxo.seenit.models.RegisterUserBindingModel;
 import com.thexaxo.seenit.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,9 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Transactional
@@ -118,6 +122,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public long getSavedPostsPages(User user, int size) {
+        return (long) Math.ceil((double) user.getSavedPosts().size() / size);
+    }
+
+    @Override
     public long getUpvotedPostsPages(User user, int size) {
         return (long) Math.ceil((double) user.getUpvotedPosts().size() / size);
     }
@@ -145,5 +154,46 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         loggedUser.setPassword(this.encoder.encode(bindingModel.getNewPassword()));
         return true;
+    }
+
+    @Override
+    public void edit(boolean editRoles, boolean updateAuthentication, String username, EditUserBindingModel bindingModel) {
+        User user = this.getUserByUsername(username);
+
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
+
+        user.setUsername(bindingModel.getUsername());
+        user.setEmail(bindingModel.getEmail());
+
+        if (bindingModel.getPassword().length() != 0) {
+            user.setPassword(this.encoder.encode(bindingModel.getPassword()));
+        }
+
+        if (editRoles) {
+            Set<Role> rolesToAdd = new HashSet<>();
+
+            for (String roleName : bindingModel.getRoles()) {
+                Role role = this.roleService.findRoleByAuthority(roleName);
+
+                if (role == null) {
+                    continue;
+                }
+
+                rolesToAdd.add(role);
+            }
+
+            user.setAuthorities(rolesToAdd);
+
+            if (updateAuthentication) {
+                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+                Authentication newAuth = new UsernamePasswordAuthenticationToken(auth.getPrincipal(), auth.getCredentials(), rolesToAdd);
+
+                SecurityContextHolder.getContext().setAuthentication(newAuth);
+            }
+        }
+
+        this.userRepository.saveAndFlush(user);
     }
 }

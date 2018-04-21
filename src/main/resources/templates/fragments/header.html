@@ -19,6 +19,16 @@
                                th:href="@{/u/{username}(username = ${#authentication.getName()})}"
                                th:text="${#authentication.getName()}"></a>
                         </li>
+                        <th:block sec:authorize="hasAnyRole('GOD', 'ADMIN')">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/admin/user-panel">User Panel</a>
+                            </li>
+                        </th:block>
+                        <th:block sec:authorize="hasAnyRole('GOD', 'ADMIN', 'MODERATOR')">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/reports">Reports</a>
+                            </li>
+                        </th:block>
                         <li class="nav-item">
                             <a class="nav-link" href="/logout">Logout</a>
                         </li>

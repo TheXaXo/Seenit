@@ -35,6 +35,12 @@ $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
             query = "/comments";
 
             break;
+        case "#nav-posts-saved":
+            activeTabTotalPages = parseInt($("#savedPostsPages").val());
+            activeTabContentDivSelector = "#nav-posts-saved";
+            query = "/posts/saved";
+
+            break;
         case "#nav-posts-upvoted":
             activeTabTotalPages = parseInt($("#upvotedPostsPages").val());
             activeTabContentDivSelector = "#nav-posts-upvoted";

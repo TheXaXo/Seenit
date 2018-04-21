@@ -17,6 +17,10 @@ public interface PostService {
 
     void downvote(String postId, User user);
 
+    void savePost(String postId, User user);
+
+    void deletePost(String postId, User user);
+
     Page<Post> listAllByPage(Pageable pageable);
 
     Page<Post> listAllBySubseenitAndPage(Subseenit subseenit, Pageable pageable);
@@ -27,13 +31,15 @@ public interface PostService {
 
     Page<Post> listAllDownvotedByUser(User user, Pageable pageable);
 
+    Page<Post> listAllSavedByUser(User user, Pageable pageable);
+
     long getAllPostsPagesCount(int size);
 
     long getCommentsPagesCount(Post post, int size);
 
     Post findById(String postId);
 
-    void populateUpvotedDownvotedFields(Page<Post> posts, User user);
+    void populateUpvotedDownvotedSavedFields(Page<Post> posts, User user);
 
-    void populateUpvotedDownvotedFields(Post post, User user);
+    void populateUpvotedDownvotedSavedFields(Post post, User user);
 }

@@ -1,0 +1,12 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="delete">
+    <div class="container mt-5">
+        <h1>Are you sure you want to delete this post?</h1>
+        <hr>
+        <a th:href="@{/delete/{postId}/confirm(postId = ${postId})}" class="btn btn-danger">Delete post</a>
+    </div>
+</th:block>
+</body>
+</html>

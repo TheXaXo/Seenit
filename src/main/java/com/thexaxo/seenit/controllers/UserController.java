@@ -3,13 +3,18 @@ package com.thexaxo.seenit.controllers;
 import com.thexaxo.seenit.entities.User;
 import com.thexaxo.seenit.exceptions.UserNotFoundException;
 import com.thexaxo.seenit.models.ChangePasswordBindingModel;
+import com.thexaxo.seenit.models.EditUserBindingModel;
 import com.thexaxo.seenit.models.LoginUserBindingModel;
 import com.thexaxo.seenit.models.RegisterUserBindingModel;
+import com.thexaxo.seenit.services.RoleService;
 import com.thexaxo.seenit.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -17,14 +22,17 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.ArrayList;
 
 @Controller
 public class UserController {
     private UserService userService;
+    private RoleService roleService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, RoleService roleService) {
         this.userService = userService;
+        this.roleService = roleService;
     }
 
     @GetMapping("/register")
@@ -96,6 +104,8 @@ public class UserController {
                 userService.getSubmittedCommentsPages(user, pageable.getPageSize()));
 
         if (principal != null && principal.getName().equals(username)) {
+            modelAndView.addObject("savedPostsPages",
+                    userService.getSavedPostsPages(user, pageable.getPageSize()));
             modelAndView.addObject("upvotedPostsPages",
                     userService.getUpvotedPostsPages(user, pageable.getPageSize()));
             modelAndView.addObject("downvotedPostsPages",
@@ -147,6 +157,56 @@ public class UserController {
 
         modelAndView.clear();
         modelAndView.setViewName("redirect:/u/" + loggedUser.getUsername());
+
+        return modelAndView;
+    }
+
+    @GetMapping("/user/edit/{username}")
+    @PreAuthorize("hasAnyRole('GOD', 'ADMIN')")
+    public ModelAndView edit(ModelAndView modelAndView, @PathVariable String username, @ModelAttribute("user") EditUserBindingModel bindingModel, Authentication authentication) {
+        User user = this.userService.getUserByUsername(username);
+
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
+
+        bindingModel.setUsername(user.getUsername());
+        bindingModel.setEmail(user.getEmail());
+        bindingModel.setRoles(new ArrayList<>());
+
+        user.getAuthorities()
+                .forEach(a -> bindingModel.getRoles().add(a.getAuthority()));
+
+        boolean isGod = authentication.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals("ROLE_GOD"));
+
+        modelAndView.addObject("isGod", isGod);
+        modelAndView.addObject("roles", this.roleService.getAllRoles());
+        modelAndView.setViewName("admin/user-edit :: user-edit");
+
+        return modelAndView;
+    }
+
+    @PostMapping("/user/edit/{username}")
+    @PreAuthorize("hasAnyRole('GOD', 'ADMIN')")
+    public ModelAndView editConfirm(ModelAndView modelAndView, @PathVariable String username, @Valid @ModelAttribute("user") EditUserBindingModel bindingModel, BindingResult bindingResult, Authentication authentication, Principal principal) {
+        User user = this.userService.getUserByUsername(username);
+
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
+
+        boolean isGod = authentication.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals("ROLE_GOD"));
+
+        this.userService.edit(isGod, principal.getName().equals(username), username, bindingModel);
+
+        isGod = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals("ROLE_GOD"));
+
+        modelAndView.addObject("isGod", isGod);
+        modelAndView.addObject("roles", this.roleService.getAllRoles());
+        modelAndView.setViewName("admin/user-edit :: user-edit");
 
         return modelAndView;
     }

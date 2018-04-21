@@ -58,6 +58,9 @@ public class Post {
     @Transient
     private boolean isDownvoted;
 
+    @Transient
+    private boolean isSaved;
+
     @ManyToMany(mappedBy = "upvotedPosts")
     private List<User> usersUpvoted;
 
@@ -169,6 +172,14 @@ public class Post {
 
     public void setDownvoted(boolean downvoted) {
         isDownvoted = downvoted;
+    }
+
+    public boolean isSaved() {
+        return this.isSaved;
+    }
+
+    public void setSaved(boolean saved) {
+        isSaved = saved;
     }
 
     public List<User> getUsersUpvoted() {

@@ -1,0 +1,39 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<table class="table table-striped table-hover ">
+    <thead>
+    <tr>
+        <th>Reported by</th>
+        <th>Reason</th>
+        <th>Actions</th>
+        <th>Submitted</th>
+    </tr>
+    </thead>
+    <tbody>
+    <th:block th:fragment="reports">
+        <th:block th:each="report : ${reports}">
+            <tr>
+                <td>
+                    <a th:href="@{/u/{username}(username = ${report.getCreator().getUsername()})}"
+                       th:text="|/u/${report.getCreator().getUsername()}|"
+                       class="btn btn-sm"></a>
+                </td>
+                <td>
+                    <a th:href="@{/report/reason/{id}(id = ${report.getId()})}"
+                       class="btn btn-sm btn-warning">Reason</a>
+                </td>
+                <td>
+                    <a th:href="@{/s/{subseenit}/comments/{id}(subseenit = ${report.getPost().getSubseenit().getName()}, id = ${report.getPost().getId()})}"
+                       class="btn btn-sm btn-primary">Post</a>
+                    <a th:href="@{/report/resolve/{id}(id = ${report.getId()})}"
+                       class="btn btn-sm btn-success" th:id="resolveButton">Resolve</a>
+                </td>
+                <td th:text="${report.getSubmittedTimeAgo()}"></td>
+            </tr>
+        </th:block>
+    </th:block>
+    </tbody>
+</table>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="user-edit">
+    <form th:id="form" th:action="@{/user/edit/{username}(username = ${user.getUsername()})}" th:method="POST"
+          th:object="${user}">
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" placeholder="Enter password"
+                   name="password" th:value="*{password}">
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email" aria-describedby="emailError"
+                   placeholder="Enter email"
+                   name="email" th:value="*{email}">
+            <small th:if="${#fields.hasErrors('email')}" id="emailError" class="form-text text-danger">Should
+                not be shorter than 5 characters.
+            </small>
+        </div>
+        <div class="form-group">
+            <label for="roles">Roles</label>
+            <select th:disabled="${!isGod}" multiple class="form-control"
+                    id="roles" aria-describedby="rolesError" name="roles">
+                <th:block th:each="role : ${roles}">
+                    <option th:selected="${user.getRoles().contains(role.getAuthority())}"
+                            th:text="${role.getAuthority()}"></option>
+                </th:block>
+            </select>
+            <small th:if="${#fields.hasErrors('roles')}" id="rolesError"
+                   class="form-text text-danger">
+                You must select at least one role.
+            </small>
+        </div>
+        <button type="submit" class="btn btn-primary">Edit</button>
+    </form>
+</th:block>
+</body>
+</html>

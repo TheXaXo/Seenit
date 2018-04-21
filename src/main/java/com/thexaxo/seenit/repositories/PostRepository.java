@@ -24,4 +24,6 @@ public interface PostRepository extends PagingAndSortingRepository<Post, String>
     Page<Post> findAllByUsersUpvoted(@Param("user") User user, Pageable pageable);
 
     Page<Post> findAllByUsersDownvoted(@Param("user") User user, Pageable pageable);
+
+    Page<Post> findAllByUsersSaved(@Param("user") User user, Pageable pageable);
 }

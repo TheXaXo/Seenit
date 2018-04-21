@@ -1,6 +1,7 @@
 package com.thexaxo.seenit.services;
 
 import com.thexaxo.seenit.entities.Post;
+import com.thexaxo.seenit.entities.Role;
 import com.thexaxo.seenit.entities.Subseenit;
 import com.thexaxo.seenit.entities.User;
 import com.thexaxo.seenit.exceptions.PostNotFoundException;
@@ -10,9 +11,12 @@ import com.thexaxo.seenit.repositories.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -89,6 +93,42 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public void savePost(String postId, User user) {
+        Post post = this.repository.findPostById(postId);
+
+        if (post == null) {
+            throw new PostNotFoundException();
+        }
+
+        if (user.getSavedPosts().contains(post)) {
+            user.getSavedPosts().remove(post);
+        } else {
+            user.getSavedPosts().add(post);
+        }
+
+        this.repository.save(post);
+    }
+
+    @Override
+    public void deletePost(String postId, User user) {
+        Post post = this.repository.findPostById(postId);
+
+        if (post == null) {
+            throw new PostNotFoundException();
+        }
+
+        if (user.getPosts().contains(post)) {
+            this.repository.delete(post);
+        } else {
+            Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
+
+            if (authorities.stream().map(GrantedAuthority::getAuthority).anyMatch(r -> r.equals("ROLE_MODERATOR") || r.equals("ROLE_ADMIN") || r.equals("ROLE_GOD"))) {
+                this.repository.delete(post);
+            }
+        }
+    }
+
+    @Override
     public Page<Post> listAllByPage(Pageable pageable) {
         return this.repository.findAll(pageable);
     }
@@ -114,6 +154,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public Page<Post> listAllSavedByUser(User user, Pageable pageable) {
+        return this.repository.findAllByUsersSaved(user, pageable);
+    }
+
+    @Override
     public long getAllPostsPagesCount(int size) {
         return (long) Math.ceil((double) this.repository.count() / size);
     }
@@ -129,20 +174,26 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void populateUpvotedDownvotedFields(Page<Post> posts, User user) {
+    public void populateUpvotedDownvotedSavedFields(Page<Post> posts, User user) {
         for (Post post : posts) {
-            this.populateUpvotedDownvotedFields(post, user);
+            this.populateUpvotedDownvotedSavedFields(post, user);
         }
     }
 
     @Override
-    public void populateUpvotedDownvotedFields(Post post, User user) {
+    public void populateUpvotedDownvotedSavedFields(Post post, User user) {
         if (user.getUpvotedPosts().contains(post)) {
             post.setUpvoted(true);
             post.setDownvoted(false);
         } else if (user.getDownvotedPosts().contains(post)) {
             post.setUpvoted(false);
             post.setDownvoted(true);
+        }
+
+        if (user.getSavedPosts().contains(post)) {
+            post.setSaved(true);
+        } else {
+            post.setSaved(false);
         }
     }
 }

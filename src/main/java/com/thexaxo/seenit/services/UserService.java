@@ -3,6 +3,7 @@ package com.thexaxo.seenit.services;
 import com.thexaxo.seenit.entities.Subseenit;
 import com.thexaxo.seenit.entities.User;
 import com.thexaxo.seenit.models.ChangePasswordBindingModel;
+import com.thexaxo.seenit.models.EditUserBindingModel;
 import com.thexaxo.seenit.models.RegisterUserBindingModel;
 
 import java.util.List;
@@ -26,6 +27,8 @@ public interface UserService {
 
     long getSubmittedCommentsPages(User user, int size);
 
+    long getSavedPostsPages(User user, int size);
+
     long getUpvotedPostsPages(User user, int size);
 
     long getDownvotedPostsPages(User user, int size);
@@ -35,4 +38,6 @@ public interface UserService {
     long getDownvotedCommentsPages(User user, int size);
 
     boolean changePassword(ChangePasswordBindingModel bindingModel, User loggedUser);
+
+    void edit(boolean editRoles, boolean updateAuthentication, String username, EditUserBindingModel bindingModel);
 }

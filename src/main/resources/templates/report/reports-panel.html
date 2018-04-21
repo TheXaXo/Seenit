@@ -1,0 +1,26 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="reports-panel">
+    <script th:src="@{/js/reports-data.js}"></script>
+    <script th:src="@{/js/report-resolve-button.js}"></script>
+    <input type="hidden" id="totalPages" th:value="${totalPages}"/>
+    <div class="container mt-5">
+        <h1>All Reports</h1>
+        <hr>
+        <table class="table table-striped table-hover ">
+            <thead>
+            <tr>
+                <th>Reported by</th>
+                <th>Reason</th>
+                <th>Actions</th>
+                <th>Submitted</th>
+            </tr>
+            </thead>
+            <tbody th:id="tableBody">
+            </tbody>
+        </table>
+    </div>
+</th:block>
+</body>
+</html>

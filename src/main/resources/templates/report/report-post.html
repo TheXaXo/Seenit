@@ -1,0 +1,19 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="report-post">
+    <div class="container mt-5">
+        <h1>Report Post</h1>
+        <hr>
+        <form th:action="@{/report/{id}(id = ${postId})}" th:method="POST">
+            <div class="form-group">
+                <label for="reportReasonTextArea">Reason</label>
+                <textarea id="reportReasonTextArea" class="form-control"
+                          rows="5" placeholder="Enter reason" name="reason"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit report</button>
+        </form>
+    </div>
+</th:block>
+</body>
+</html>
