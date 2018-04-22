@@ -2,7 +2,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <body>
 <div class="row m-3 p-3 rounded shadow" th:fragment="message" style="background-color: white"
-     th:style="${message.isSentByLoggedUser()} ? 'text-align: left' : 'text-align: right'">
+     th:style="${message.isSentByLoggedUser()} ? 'text-align: right' : 'text-align: left'">
     <div class="col-md-12">
         <a class="mr-1" th:text="${message.getCreator().getUsername()}"
            th:href="@{/u/{username}(username = ${message.getCreator().getUsername()})}"></a>
