@@ -1,6 +1,5 @@
 package com.thexaxo.seenit.services;
 
-import com.thexaxo.seenit.entities.Post;
 import com.thexaxo.seenit.entities.Thread;
 import com.thexaxo.seenit.entities.User;
 import com.thexaxo.seenit.repositories.ThreadRepository;

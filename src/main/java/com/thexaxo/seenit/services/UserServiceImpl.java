@@ -11,7 +11,6 @@ import com.thexaxo.seenit.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,7 +20,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -38,7 +40,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void register(RegisterUserBindingModel bindingModel) {
+    public User register(RegisterUserBindingModel bindingModel) {
         User user = new User();
 
         user.setUsername(bindingModel.getUsername());
@@ -61,7 +63,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
 
         user.setAuthorities(new HashSet<>(Collections.singletonList(userRole)));
-        this.userRepository.saveAndFlush(user);
+        return this.userRepository.saveAndFlush(user);
     }
 
     @Override
@@ -157,7 +159,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void edit(boolean editRoles, boolean updateAuthentication, String username, EditUserBindingModel bindingModel) {
+    public User edit(boolean editRoles, boolean updateAuthentication, String username, EditUserBindingModel bindingModel) {
         User user = this.getUserByUsername(username);
 
         if (user == null) {
@@ -194,6 +196,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             }
         }
 
-        this.userRepository.saveAndFlush(user);
+        return this.userRepository.saveAndFlush(user);
     }
 }

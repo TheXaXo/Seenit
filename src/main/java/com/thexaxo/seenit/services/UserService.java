@@ -9,7 +9,7 @@ import com.thexaxo.seenit.models.RegisterUserBindingModel;
 import java.util.List;
 
 public interface UserService {
-    void register(RegisterUserBindingModel bindingModel);
+    User register(RegisterUserBindingModel bindingModel);
 
     boolean userWithUsernameExists(String username);
 
@@ -39,5 +39,5 @@ public interface UserService {
 
     boolean changePassword(ChangePasswordBindingModel bindingModel, User loggedUser);
 
-    void edit(boolean editRoles, boolean updateAuthentication, String username, EditUserBindingModel bindingModel);
+    User edit(boolean editRoles, boolean updateAuthentication, String username, EditUserBindingModel bindingModel);
 }
