@@ -3,7 +3,9 @@
 <body>
 <th:block th:fragment="header">
     <div class="container-fluid">
-        <nav class="navbar navbar-expand-lg navbar-light rounded shadow" style="background-color: #e9ecef">
+        <nav class="navbar navbar-expand-lg navbar-light rounded shadow night-mode-medium-background"
+             style="background-color: #e9ecef">
+            <i class="fa fa-moon" th:id="nightModeBtn"></i>
             <a href="/">
                 <img th:src="@{/images/website-logo.png}" width="125px" alt="logo">
             </a>
@@ -15,32 +17,48 @@
                 <th:block sec:authorize="isAuthenticated()">
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item">
-                            <a class="nav-link"
-                               th:href="@{/u/{username}(username = ${#authentication.getName()})}"
-                               th:text="${#authentication.getName()}"></a>
+                            <a class="nav-link" th:href="@{/u/{username}(username = ${#authentication.getName()})}">
+                                <i class="fa fa-user mr-1"></i>
+                                <th:block th:text="${#authentication.getName()}"></th:block>
+                            </a>
                         </li>
                         <th:block sec:authorize="hasAnyRole('GOD', 'ADMIN')">
                             <li class="nav-item">
-                                <a class="nav-link" href="/admin/user-panel">User Panel</a>
+                                <a class="nav-link" href="/admin/user-panel">
+                                    <i class="fa fa-users mr-1"></i>
+                                    User Panel
+                                </a>
                             </li>
                         </th:block>
                         <th:block sec:authorize="hasAnyRole('GOD', 'ADMIN', 'MODERATOR')">
                             <li class="nav-item">
-                                <a class="nav-link" href="/reports">Reports</a>
+                                <a class="nav-link" href="/reports">
+                                    <i class="fa fa-flag mr-1"></i>
+                                    Reports
+                                </a>
                             </li>
                         </th:block>
                         <li class="nav-item">
-                            <a class="nav-link" href="/logout">Logout</a>
+                            <a class="nav-link" href="/logout">
+                                <i class="fa fa-sign-out-alt mr-1"></i>
+                                Logout
+                            </a>
                         </li>
                     </ul>
                 </th:block>
                 <th:block sec:authorize="!isAuthenticated()">
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="/login">Login</a>
+                            <a class="nav-link" href="/login">
+                                <i class="fa fa-sign-in-alt mr-1"></i>
+                                Login
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/register">Register</a>
+                            <a class="nav-link" href="/register">
+                                <i class="fa fa-user-plus mr-1"></i>
+                                Register
+                            </a>
                         </li>
                     </ul>
                 </th:block>

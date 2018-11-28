@@ -3,7 +3,7 @@
 <body>
 <th:block th:fragment="send-message-from-profile">
     <script th:src="@{/js/send-message-from-profile.js}"></script>
-    <div class="container mt-5">
+    <div class="container mt-5 jumbotron night-mode-medium-background">
         <h1 th:text="|Send a message to /u/ ${recipient}|"></h1>
         <hr>
         <form th:action="@{/u/{username}/message(username = ${recipient})}" th:id="newMessageForm" th:method="POST"

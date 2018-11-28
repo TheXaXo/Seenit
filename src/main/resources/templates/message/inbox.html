@@ -5,35 +5,43 @@
     <script th:src="@{/js/threads-data.js}"></script>
     <script th:src="@{/js/messages-data.js}"></script>
     <script th:src="@{/js/send-message-from-inbox.js}"></script>
-    <div class="container mt-5">
+    <div class="container mt-5 jumbotron night-mode-medium-background">
         <h1>Inbox</h1>
         <hr>
         <div class="container">
             <div class="row">
-                <div class="col-md-4" id="threadsDiv" style="overflow:scroll;"></div>
-                <div class="col-md-8 pl-5">
-                    <div class="row" style="overflow:scroll; height: 375px;" th:id="messagesScrollDiv">
-                        <div class="col-md-12" id="messagesDiv">
-                        </div>
+                <th:block th:if="${isInboxEmpty}">
+                    <div th:id="emptyInbox">
+                        <i class="far fa-envelope-open"></i>
+                        <h1>Empty Inbox</h1>
                     </div>
-                    <div class="row mt-3 p-3 rounded shadow" id="sendMessageDiv"
-                         style="background-color: white; display: none">
-                        <div class="col-md-12">
-                            <form id="sendMessageForm" th:method="POST">
-                                <input type="text" hidden="hidden" id="threadRecipientUsernameInput">
-                                <div class="form-group">
+                </th:block>
+                <th:block th:unless="${isInboxEmpty}">
+                    <div class="col-md-4" id="threadsDiv" style="overflow-y:auto;"></div>
+                    <div class="col-md-8 pl-5">
+                        <div class="row" style="height: 375px; overflow-y:auto;" th:id="messagesScrollDiv">
+                            <div class="col-md-12" id="messagesDiv">
+                            </div>
+                        </div>
+                        <div class="row mt-3 p-3 rounded shadow night-mode-light-background" id="sendMessageDiv"
+                             style="background-color: white; display: none">
+                            <div class="col-md-12">
+                                <form id="sendMessageForm" th:method="POST">
+                                    <input type="text" hidden="hidden" id="threadRecipientUsernameInput">
+                                    <div class="form-group">
                                     <textarea id="messageTextarea" name="content" class="form-control"
                                               aria-describedby="messageError" rows="5"
                                               placeholder="Enter message"></textarea>
-                                    <small style="display: none" id="messageError" class="form-text text-danger">
-                                        Message should be between 1 and 255 characters.
-                                    </small>
-                                </div>
-                                <button type="submit" class="btn btn-success">Send</button>
-                            </form>
+                                        <small style="display: none" id="messageError" class="form-text text-danger">
+                                            Message should be between 1 and 255 characters.
+                                        </small>
+                                    </div>
+                                    <button type="submit" class="btn btn-success">Send</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </th:block>
             </div>
         </div>
     </div>

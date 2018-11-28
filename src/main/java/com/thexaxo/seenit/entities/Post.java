@@ -46,7 +46,7 @@ public class Post {
     @Column
     private String type;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<Comment> comments;
 
     @Transient

@@ -1,10 +1,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <body>
-<div class="row m-3 p-3 rounded shadow" th:fragment="message" style="background-color: white"
-     th:style="${message.isSentByLoggedUser()} ? 'text-align: right' : 'text-align: left'">
+<div class="row m-3 p-3 rounded shadow night-mode-light-background" th:fragment="message"
+     th:style="${message.isSentByLoggedUser()} ? 'text-align: right;' : 'text-align: left;'"
+     th:styleappend="'background-color: white'">
     <div class="col-md-12">
-        <a class="mr-1" th:text="${message.getCreator().getUsername()}"
+        <a class="mr-1 night-mode-link" th:text="${message.getCreator().getUsername()}"
            th:href="@{/u/{username}(username = ${message.getCreator().getUsername()})}"></a>
         <span class="text-muted mr-1" th:text="${message.getSentTimeAgo()}"></span>
     </div>

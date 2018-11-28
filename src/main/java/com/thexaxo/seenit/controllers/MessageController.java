@@ -46,6 +46,10 @@ public class MessageController {
         modelAndView.addObject("view", "message/inbox :: inbox");
         modelAndView.setViewName("base-layout");
 
+        if (this.threadService.isInboxEmpty(this.userService.getUserByUsername(principal.getName()))) {
+            modelAndView.addObject("isInboxEmpty", "true");
+        }
+
         return modelAndView;
     }
 

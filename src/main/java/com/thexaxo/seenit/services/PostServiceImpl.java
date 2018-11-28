@@ -1,9 +1,6 @@
 package com.thexaxo.seenit.services;
 
-import com.thexaxo.seenit.entities.Post;
-import com.thexaxo.seenit.entities.Role;
-import com.thexaxo.seenit.entities.Subseenit;
-import com.thexaxo.seenit.entities.User;
+import com.thexaxo.seenit.entities.*;
 import com.thexaxo.seenit.exceptions.PostNotFoundException;
 import com.thexaxo.seenit.models.SubmitLinkBindingModel;
 import com.thexaxo.seenit.models.SubmitTextPostBindingModel;
@@ -118,12 +115,12 @@ public class PostServiceImpl implements PostService {
         }
 
         if (user.getPosts().contains(post)) {
-            this.repository.delete(post);
+            deletePostFromDatabase(post);
         } else {
             Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
 
             if (authorities.stream().map(GrantedAuthority::getAuthority).anyMatch(r -> r.equals("ROLE_MODERATOR") || r.equals("ROLE_ADMIN") || r.equals("ROLE_GOD"))) {
-                this.repository.delete(post);
+                deletePostFromDatabase(post);
             }
         }
     }
@@ -195,5 +192,31 @@ public class PostServiceImpl implements PostService {
         } else {
             post.setSaved(false);
         }
+    }
+
+    private void deletePostFromDatabase(Post post) {
+        for (User downvotedUser : post.getUsersDownvoted()) {
+            downvotedUser.getDownvotedPosts().remove(post);
+        }
+
+        for (User upvotedUser : post.getUsersUpvoted()) {
+            upvotedUser.getUpvotedPosts().remove(post);
+        }
+
+        for (User savedUser : post.getUsersSaved()) {
+            savedUser.getSavedPosts().remove(post);
+        }
+
+        for (Comment comment : post.getComments()) {
+            for (User user : comment.getUsersUpvoted()) {
+                user.getUpvotedComments().remove(comment);
+            }
+
+            for (User user : comment.getUsersDownvoted()) {
+                user.getDownvotedComments().remove(comment);
+            }
+        }
+
+        this.repository.delete(post);
     }
 }

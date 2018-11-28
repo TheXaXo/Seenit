@@ -1,7 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <body>
-<div class="row m-3 p-3 rounded shadow thread" style="background-color: white; cursor: pointer" th:fragment="thread">
+<div class="row m-3 p-3 rounded shadow thread night-mode-light-background" style="background-color: white; cursor: pointer" th:fragment="thread">
     <input type="text" hidden="hidden" class="idInput" th:value="${thread.getId()}">
     <input type="text" hidden="hidden" id="recipientUsernameInput" th:value="${thread.getOtherParticipantUsername()}">
     <input type="text" hidden="hidden" id="messagesPagesCountInput" th:value="${thread.getMessagesPagesCount()}">

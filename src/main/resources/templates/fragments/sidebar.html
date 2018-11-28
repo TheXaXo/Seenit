@@ -4,7 +4,7 @@
 <body>
 <th:block th:fragment="sidebar">
     <div class="ml-3">
-        <div class="row mb-4 p-3 rounded shadow" style="background-color: white">
+        <div class="row mb-4 p-3 rounded shadow night-mode-light-background" style="background-color: white">
             <div class="col-md-12 text-center">
                 <h1 class="display-4" style="font-size: 1.35rem;">Search for subseenit</h1>
                 <hr>
@@ -14,14 +14,14 @@
                     <input id="searchInput" class="form-control mr-1" placeholder="Subseenit name">
                     <span class="input-group-addon">
                         <button id="searchButton" class="btn btn-default" type="button">
-                            <i class="fa fa-search"></i> Search
+                            <i class="fa fa-search mr-1"></i> Search
                         </button>
                     </span>
                 </div>
             </div>
         </div>
         <th:block sec:authorize="isAuthenticated()">
-            <div class="row mb-4 p-3 rounded shadow" style="background-color: white"
+            <div class="row mb-4 p-3 rounded shadow night-mode-light-background" style="background-color: white"
                  th:if="${subseenitName} != 'all' AND ${subseenitName} != 'front'">
                 <div class="col-md-12">
                     <th:block th:if="${!isSubscribed}">
@@ -34,22 +34,29 @@
                     </th:block>
                 </div>
             </div>
-            <div class="row p-3 rounded mb-4 shadow" style="background-color: white">
+            <div class="row p-3 rounded mb-4 shadow night-mode-light-background" style="background-color: white">
                 <div class="col-md-12 mb-2">
-                    <a th:href="@{/submit/link}" class="btn btn-primary btn-block">Submit a new link</a>
+                    <a th:href="@{/submit/link}" class="btn btn-primary btn-block">
+                        <i class="fa fa-link mr-1"></i>
+                        Submit a new link
+                    </a>
                 </div>
                 <div class="col-md-12">
-                    <a th:href="@{/submit/text}" class="btn btn-primary btn-block">Submit a new text
-                        post</a>
+                    <a th:href="@{/submit/text}" class="btn btn-primary btn-block">
+                        <i class="fa fa-file-alt mr-1"></i>
+                        Submit a new text post
+                    </a>
                 </div>
             </div>
-            <div class="row p-3 rounded mb-4 shadow" style="background-color: white">
+            <div class="row p-3 rounded mb-4 shadow night-mode-light-background" style="background-color: white">
                 <div class="col-md-12">
-                    <a th:href="@{/subseenits/create}" class="btn btn-info btn-block">Create
-                        your own subseenit</a>
+                    <a th:href="@{/subseenits/create}" class="btn btn-info btn-block">
+                        <i class="fa fa-plus-square mr-1"></i>
+                        Create your own subseenit
+                    </a>
                 </div>
             </div>
-            <div class="row p-3 rounded mb-4 shadow" style="background-color: white">
+            <div class="row p-3 rounded mb-4 shadow night-mode-light-background" style="background-color: white">
                 <div class="col-md-12 text-center">
                     <h1 class="display-4" style="font-size: 1.35rem;">Subscribed subseenits</h1>
                     <hr>

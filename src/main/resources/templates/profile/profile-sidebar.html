@@ -4,7 +4,7 @@
 <body>
 <th:block th:fragment="profile-sidebar">
     <div class="ml-3">
-        <div class="row p-3 rounded mb-4 shadow" style="background-color: white">
+        <div class="row p-3 rounded mb-4 shadow night-mode-medium-background" style="background-color: white">
             <div class="col-md-12 text-center">
                 <h1 class="display-4" th:text="|/u/${user.getUsername()}|"></h1>
                 <h1 class="display-4" style="font-size: 1.3rem;"
@@ -22,18 +22,26 @@
                 <th:block th:if="${#authentication.getName() == user.getUsername()}">
                     <div class="col-md-12 mb-2">
                         <hr>
-                        <a th:href="@{/messages}" class="btn btn-primary btn-block">Messages</a>
+                        <a th:href="@{/messages}" class="btn btn-primary btn-block">
+                            <i class="fa fa-comments mr-1"></i>
+                            Messages
+                        </a>
                     </div>
                     <div class="col-md-12">
-                        <a th:href="@{/user/password/change}" class="btn btn-outline-secondary btn-block">Change
-                            password</a>
+                        <a th:href="@{/user/password/change}" class="btn btn-outline-secondary btn-block">
+                            <i class="fa fa-lock mr-1"></i>
+                            Change password
+                        </a>
                     </div>
                 </th:block>
                 <th:block th:unless="${#authentication.getName() == user.getUsername()}">
                     <div class="col-md-12 mb-2">
                         <hr>
                         <a th:href="@{/u/{username}/message(username = ${user.getUsername()})}"
-                           class="btn btn-primary btn-block">Message</a>
+                           class="btn btn-primary btn-block">
+                            <i class="fas fa-comment mr-1"></i>
+                            Message
+                        </a>
                     </div>
                 </th:block>
             </th:block>

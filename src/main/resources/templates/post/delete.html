@@ -2,7 +2,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <body>
 <th:block th:fragment="delete">
-    <div class="container mt-5">
+    <div class="container mt-5 jumbotron night-mode-medium-background">
         <h1>Are you sure you want to delete this post?</h1>
         <hr>
         <a th:href="@{/delete/{postId}/confirm(postId = ${postId})}" class="btn btn-danger">Delete post</a>

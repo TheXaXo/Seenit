@@ -12,5 +12,7 @@ public interface ThreadService {
 
     List<Thread> getAllThreadsOfUser(User user);
 
+    boolean isInboxEmpty(User user);
+
     Thread findThreadById(String threadId);
 }

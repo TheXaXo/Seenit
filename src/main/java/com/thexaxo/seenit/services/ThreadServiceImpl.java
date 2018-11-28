@@ -55,6 +55,11 @@ public class ThreadServiceImpl implements ThreadService {
     }
 
     @Override
+    public boolean isInboxEmpty(User user) {
+        return this.repository.countAllByParticipantsContaining(user) == 0;
+    }
+
+    @Override
     public Thread findThreadById(String threadId) {
         return this.repository.findThreadById(threadId);
     }

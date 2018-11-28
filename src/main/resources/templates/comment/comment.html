@@ -3,7 +3,8 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <body>
 <div id="commentData">
-    <div class="row mb-3 p-3 rounded shadow" style="background-color: white" th:fragment="comment">
+    <div class="row mb-3 p-3 rounded shadow night-mode-light-background" style="background-color: white"
+         th:fragment="comment">
         <div class="mr-3">
             <input type="text" hidden="hidden" class="idInput" th:value="${comment.getId()}">
             <th:block sec:authorize="isAuthenticated()">
@@ -19,7 +20,7 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <a class="mr-1"
+                <a class="mr-1 night-mode-link"
                    th:href="@{/u/{username}(username = ${comment.getCreator().getUsername()})}"
                    th:text="${comment.getCreator().getUsername()}">
                 </a>

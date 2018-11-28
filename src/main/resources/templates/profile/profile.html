@@ -6,7 +6,7 @@
     <script th:src="@{/js/upvote-downvote-buttons.js}"></script>
     <script th:src="@{/js/save-post-button.js}"></script>
     <div th:class="container-fluid">
-        <div class="jumbotron">
+        <div class="jumbotron mt-4 night-mode-medium-background">
             <div th:class="row">
                 <div class="col-md-9">
                     <input type="hidden" id="submittedPostsPages" th:value="${submittedPostsPages}"/>
@@ -20,26 +20,32 @@
                     </th:block>
                     <nav>
                         <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                            <a class="nav-item nav-link active" id="nav-posts-tab" data-toggle="tab" href="#nav-posts"
+                            <a class="nav-item nav-link active night-mode-link" id="nav-posts-tab" data-toggle="tab"
+                               href="#nav-posts"
                                role="tab" aria-controls="nav-posts" aria-selected="true">Posts</a>
-                            <a class="nav-item nav-link" id="nav-comments-tab" data-toggle="tab" href="#nav-comments"
+                            <a class="nav-item nav-link night-mode-link" id="nav-comments-tab" data-toggle="tab"
+                               href="#nav-comments"
                                role="tab" aria-controls="nav-comments" aria-selected="false">Comments</a>
                             <th:block th:if="${#authentication.getName() == user.getUsername()}">
-                                <a class="nav-item nav-link" id="nav-posts-saved-tab" data-toggle="tab"
+                                <a class="nav-item nav-link night-mode-link" id="nav-posts-saved-tab" data-toggle="tab"
                                    href="#nav-posts-saved"
                                    role="tab" aria-controls="nav-posts-upvoted" aria-selected="false">Saved Posts</a>
-                                <a class="nav-item nav-link" id="nav-posts-upvoted-tab" data-toggle="tab"
+                                <a class="nav-item nav-link night-mode-link" id="nav-posts-upvoted-tab"
+                                   data-toggle="tab"
                                    href="#nav-posts-upvoted"
                                    role="tab" aria-controls="nav-posts-upvoted" aria-selected="false">Upvoted Posts</a>
-                                <a class="nav-item nav-link" id="nav-posts-downvoted-tab" data-toggle="tab"
+                                <a class="nav-item nav-link night-mode-link" id="nav-posts-downvoted-tab"
+                                   data-toggle="tab"
                                    href="#nav-posts-downvoted"
                                    role="tab" aria-controls="nav-posts-downvoted" aria-selected="false">Downvoted
                                     Posts</a>
-                                <a class="nav-item nav-link" id="nav-comments-upvoted-tab" data-toggle="tab"
+                                <a class="nav-item nav-link night-mode-link" id="nav-comments-upvoted-tab"
+                                   data-toggle="tab"
                                    href="#nav-comments-upvoted"
                                    role="tab" aria-controls="nav-comments-upvoted" aria-selected="false">Upvoted
                                     Comments</a>
-                                <a class="nav-item nav-link" id="nav-comments-downvoted-tab" data-toggle="tab"
+                                <a class="nav-item nav-link night-mode-link" id="nav-comments-downvoted-tab"
+                                   data-toggle="tab"
                                    href="#nav-comments-downvoted"
                                    role="tab" aria-controls="nav-comments-downvoted" aria-selected="false">Downvoted
                                     Comments</a>

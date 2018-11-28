@@ -14,4 +14,6 @@ public interface ThreadRepository extends JpaRepository<Thread, String> {
     List<Thread> getAllByParticipantsContaining(User user);
 
     Thread findThreadById(String threadId);
+
+    int countAllByParticipantsContaining(User user);
 }

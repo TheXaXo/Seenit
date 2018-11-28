@@ -2,7 +2,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <body>
 <th:block th:fragment="submit-text">
-    <div class="container mt-5">
+    <div class="container mt-5 jumbotron night-mode-medium-background">
         <h1>Submit a new text post</h1>
         <hr>
         <form th:action="@{/submit/text}" th:method="POST" th:object="${post}">

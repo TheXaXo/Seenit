@@ -2,7 +2,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <body>
 <th:block th:fragment="login">
-    <div class="container mt-5">
+    <div class="container mt-5 jumbotron night-mode-medium-background">
         <h1>Login User</h1>
         <hr>
         <form th:action="@{/login}" th:method="POST" th:object="${user}">
