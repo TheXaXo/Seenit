@@ -1,0 +1,19 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="subscribed-subseenits">
+    <script th:src="@{/js/subscribed-subseenits-data.js}"></script>
+    <div class="col-md-12 text-center">
+        <h4 class="display-4" style="font-size: 1.35rem;">Subscribed Subseenits</h4>
+        <hr>
+    </div>
+    <div th:id="subscribedSubseenitsDiv" class="col-md-12 text-center">
+        <h4 class="display-4" style="font-size: 1.35rem;">None</h4>
+    </div>
+    <div class="col-md-12 text-center" th:id="loadMoreSubscribedSubseenits">
+        <hr>
+        <div class="btn" th:id="loadMoreSubscribedSubseenitsBtn">Load More</div>
+    </div>
+</th:block>
+</body>
+</html>

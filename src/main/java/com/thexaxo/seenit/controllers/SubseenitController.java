@@ -7,6 +7,7 @@ import com.thexaxo.seenit.models.CreateSubseenitBindingModel;
 import com.thexaxo.seenit.services.PostService;
 import com.thexaxo.seenit.services.SubseenitService;
 import com.thexaxo.seenit.services.UserService;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -125,9 +126,9 @@ public class SubseenitController {
 
     @GetMapping("/subseenits/subscribed")
     @PreAuthorize("isAuthenticated()")
-    public ModelAndView getSubscribedSubseenits(ModelAndView modelAndView, Principal principal) {
+    public ModelAndView getSubscribedSubseenits(ModelAndView modelAndView, Principal principal, @PageableDefault(size = 3) Pageable pageable) {
         User user = this.userService.getUserByUsername(principal.getName());
-        List<Subseenit> subscribedSubseenits = user.getSubscribedSubseenits();
+        Page<Subseenit> subscribedSubseenits = subseenitService.getSubseenitsSubscribedByUser(user, pageable);
 
         modelAndView.addObject("subseenits", subscribedSubseenits);
         modelAndView.setViewName("subseenit/subscribed");

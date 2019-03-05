@@ -5,9 +5,10 @@ import com.thexaxo.seenit.entities.User;
 import com.thexaxo.seenit.models.CreateSubseenitBindingModel;
 import com.thexaxo.seenit.repositories.SubseenitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -45,5 +46,10 @@ public class SubseenitServiceImpl implements SubseenitService {
     @Override
     public long getPostsPagesCount(Subseenit subseenit, int size) {
         return (long) Math.ceil((double) subseenit.getPosts().size() / size);
+    }
+
+    @Override
+    public Page<Subseenit> getSubseenitsSubscribedByUser(User user, Pageable pageable) {
+        return this.repository.findAllBySubscribersContains(user, pageable);
     }
 }

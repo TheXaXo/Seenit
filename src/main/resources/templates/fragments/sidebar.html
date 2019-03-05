@@ -3,6 +3,7 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <body>
 <th:block th:fragment="sidebar">
+    <script th:src="@{/js/search-subseenit.js}"></script>
     <div class="ml-3">
         <div class="row mb-4 p-3 rounded shadow night-mode-light-background" style="background-color: white">
             <div class="col-md-12 text-center">
@@ -57,11 +58,7 @@
                 </div>
             </div>
             <div class="row p-3 rounded mb-4 shadow night-mode-light-background" style="background-color: white">
-                <div class="col-md-12 text-center">
-                    <h1 class="display-4" style="font-size: 1.35rem;">Subscribed subseenits</h1>
-                    <hr>
-                </div>
-                <div id="subscribedSubseenitsDiv"></div>
+                <div th:replace="subseenit/subscribed-subseenits :: subscribed-subseenits"></div>
             </div>
         </th:block>
     </div>

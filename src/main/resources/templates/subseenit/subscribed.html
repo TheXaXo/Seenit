@@ -1,20 +1,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <body>
+<input type="text" hidden="hidden" th:id="totalSubscribedPagesCount" th:value="${subseenits.getTotalPages()}">
 <div id="content">
-    <th:block th:if="${subseenits.isEmpty()}">
-        <div class="col-md-12 text-center">
-            <h4 class="display-4" style="font-size: 1.35rem;">No subscribed subseenits</h4>
-        </div>
-    </th:block>
-    <th:block th:unless="${subseenits.isEmpty()}">
-        <div th:each="subseenit : ${subseenits}" class="col-md-12 mb-2">
-            <a th:href="@{/s/{subseenitName}(subseenitName = ${subseenit.getName()})}"
-               th:text="|/s/${subseenit.getName()}|"
-               class="btn btn-outline-secondary btn-block">
-            </a>
-        </div>
-    </th:block>
+    <div th:each="subseenit : ${subseenits}" class="col-md-12 mb-2">
+        <a th:href="@{/s/{subseenitName}(subseenitName = ${subseenit.getName()})}"
+           th:text="|/s/${subseenit.getName()}|"
+           class="btn btn-outline-secondary btn-block">
+        </a>
+    </div>
 </div>
 </body>
 </html>
