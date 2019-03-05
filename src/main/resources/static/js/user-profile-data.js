@@ -68,7 +68,6 @@ $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
     }
 
     currentPage = 0;
-    $(activeTabContentDivSelector).empty();
     loadFirstPage(activeTabContentDivSelector, query);
 });
 
@@ -91,8 +90,22 @@ function loadPage(pageNumber, contentDivSelector, query) {
     let contentDiv = $(contentDivSelector);
     let url = "/" + (location.pathname).substr(1) + query + location.search + "?page=" + pageNumber;
 
+    if (pageNumber === 0) {
+        $(contentDivSelector).empty();
+        $(contentDivSelector).append($('<h1>No Data</h1>'));
+    }
+
     $.get(url, function (data) {
         let content = $(data).filter("#content");
+
+        if (content.children().length === 0) {
+            return;
+        }
+
+        if (pageNumber === 0) {
+            $(contentDivSelector).empty();
+        }
+
         $(contentDiv).append(content.children());
     });
 }
